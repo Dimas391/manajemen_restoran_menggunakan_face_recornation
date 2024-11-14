@@ -1,4 +1,4 @@
-# Manajemen Restoran Menggunakan Face Recognition
+## Manajemen Restoran Menggunakan Face Recognition
 
 # 📜 **Deskripsi Proyek**  
 Aplikasi ini dirancang untuk meningkatkan efisiensi dan pengalaman pengguna dalam memesan makanan di restoran melalui perangkat mobile dan web. Aplikasi ini dilengkapi dengan fitur autentikasi menggunakan pengenalan wajah, yang memberikan keamanan tambahan dalam proses login pengguna. Selain itu, aplikasi ini menyediakan fitur scanning QR code untuk menu makanan, sehingga pelanggan dapat dengan mudah menemukan dan memesan makanan hanya dengan memindai QR code yang tersedia.
