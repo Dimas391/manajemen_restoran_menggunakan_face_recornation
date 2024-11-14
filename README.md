@@ -18,7 +18,7 @@ Aplikasi ini dirancang untuk meningkatkan efisiensi dan pengalaman pengguna dala
 - Muhammad Abil - Frontend Developer dan Pengembangan Face Recornation
 - Muhammad Rafli - Database dan Pengembangan Fitur Pemindai QR Code
 - Sulthan Juanda Al-Muttaqin - Database dan Pengembangan Fitur Pemindai QR Code
-- Tri Kumala Sari - Frontend Developer dan Pengembangan Fitur Pemindai QR CODE
+- Tri Kumala Sari - Frontend Developer dan Pengembangan Fitur Pemindai QR Code
 
 ## 🔧 Teknologi yang Digunakan
 - PHP,  Digunakan untuk pengembangan backend berbasis web, terutama dalam pembuatan API untuk integrasi dengan sistem manajemen restoran.
