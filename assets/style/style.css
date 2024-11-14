@@ -1,0 +1,151 @@
+/* Resetting some defaults */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #111;
+    color: #fff;
+}
+
+/* Header styling */
+header {
+    background-color: #222;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header .logo h1 {
+    color: #f4f;
+}
+
+header .location, header .contact {
+    color: #aaa;
+}
+
+/* Hero Section */
+.hero {
+    text-align: center;
+    padding: 50px;
+}
+
+.hero h2, .hero p {
+    margin-bottom: 10px;
+}
+
+.hero button {
+    background-color: #f4f;
+    border: none;
+    padding: 10px 20px;
+    margin: 5px;
+    cursor: pointer;
+    color: #111;
+}
+
+/* Favourite Food Section */
+.favourite-food {
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.food-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 200px;
+    justify-content: center;
+}
+
+.food-item {
+    text-align: center;
+    max-width: 150px;
+}
+
+.food-item img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.food-item p {
+    margin-top: 10px;
+}
+
+/* What We Serve Section */
+/* What We Serve Section */
+.what-we-serve {
+    padding: 40px 20px;
+    background-color: #333;
+    text-align: center;
+}
+
+.serve-items {
+    display: flex;
+    flex-wrap: nowrap; /* Mencegah elemen dibungkus ke baris baru */
+    gap: 20px; /* Memberikan jarak antar elemen */
+    overflow-x: auto; /* Menambahkan scroll horizontal jika tidak muat */
+    justify-content: center;
+    padding-top: 20px;
+}
+
+.serve-item {
+    text-align: center;
+    min-width: 300px; /* Menambah lebar minimum agar sesuai dengan gambar besar */
+    max-width: 350px;
+    padding: 20px;
+    background-color: #444;
+    border-radius: 8px;
+    flex: 1; /* Membuat elemen memanjang agar tetap seimbang */
+}
+
+.serve-item img {
+    width: 290px; /* Memperbesar lebar gambar */
+    height: 290px; /* Memperbesar tinggi gambar */
+    margin-bottom: 10px;
+    border-radius: 8px;
+}
+
+.serve-item h4 {
+    margin-top: 10px;
+    color: #f4f;
+}
+
+/* Map Section */
+.map {
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.map iframe {
+    border-radius: 8px;
+    width: 100%;
+    max-width: 600px;
+    height: 450px;
+    margin-top: 20px;
+}
+
+.map-info {
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* Footer */
+footer {
+    background-color: #222;
+    text-align: center;
+    padding: 20px;
+}
+
+.footer-content a {
+    color: #f4f;
+    margin: 0 5px;
+    text-decoration: none;
+}
+
+.footer-content a:hover {
+    text-decoration: underline;
+}
