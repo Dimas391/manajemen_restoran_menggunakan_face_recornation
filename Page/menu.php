@@ -196,25 +196,21 @@ $result = $conn->query($sql);
         </div>
 
         <div class="menu-scroll">
-            <div class="menu-grid">
-                <?php
-                if ($result->num_rows > 0) {
-                    while($row = $result->fetch_assoc()) {
-                        echo '
-                        <a href="detail_order.php?id_menu='.$row['id_menu'].'" class="menu-item">
-                            <img src="../assets/allmenu/'.$row['gambar_menu'].'" alt="'.$row['nama_menu'].'">
-                            <h3>'.$row['nama_menu'].'</h3>
-                            <p>'.$row['keterangan'].'</p>
-                            <div class="price">'.$row['harga'].'</div>
-                        </a>';
-                    }
-                } else {
-                    echo "<p>Menu tidak ditemukan</p>";
+        <div class="menu-grid">
+            <?php
+            if ($result->num_rows > 0) {
+                while($row = $result->fetch_assoc()) {
+                    echo '
+                    <a href="detail_order.php?id_menu='.$row['id_menu'].'" class="menu-item">
+                        <img src="../assets/allmenu/'.$row['gambar_menu'].'" alt="'.$row['nama_menu'].'">
+                        <h3>'.$row['nama_menu'].'</h3>
+                        <p>'.$row['keterangan'].'</p>
+                        <div class="price">Rp '.$row['harga'].'</div>
+                    </a>';
                 }
-
-                $conn->close();
-                ?>
-            </div>
+            }
+            ?>
+        </div>
         </div>
 
         <div class="navbar">

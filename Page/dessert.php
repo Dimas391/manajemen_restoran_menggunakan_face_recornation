@@ -201,18 +201,14 @@ $result = $conn->query($sql);
                         <img src="../assets/allmenu/'.$row['gambar_menu'].'" alt="'.$row['nama_menu'].'">
                         <h3>'.$row['nama_menu'].'</h3>
                         <p>'.$row['keterangan'].'</p>
-                        <div class="price">'.$row['harga'].'</div>
+                        <div class="price">Rp '.$row['harga'].'</div>
                     </a>';
                 }
-            } else {
-                echo "<p>Menu tidak ditemukan</p>";
             }
-
-            $conn->close();
             ?>
         </div>
-    </div>
-
+        </div>
+        
     <div class="navbar">
         <a href="home.php">
             <button><img src="../assets/image/icon/Home.png" alt="Home" /><span>Home</span></button>
