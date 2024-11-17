@@ -1,533 +1,183 @@
 <?php
-if (isset($_GET['username'])) {
-    $username = htmlspecialchars($_GET['username']);
-} else {
-    $username = 'Guest';
-}
+include "session.php";
+
+$username = isset($_GET['username']) ? htmlspecialchars($_GET['username']) : 'Guest';
 ?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Restoran Siantar Top</title>
-    <link rel="stylesheet" href="..\assets\style\style.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet"> <!-- Menambahkan Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <style>
-        /* Resetting some defaults */
-        /* Resetting some defaults */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: Arial, sans-serif;
-    background-color: #111;
-    color: #fff;
-}
-
-/* Header styling */
-header {
-    background-color: #222;
-    padding: 20px 50px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-}
-
-.header-content {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    justify-content: space-between;
-}
-
-header .logo h1 {
-    color: #f4f;
-    font-size: 24px;
-}
-
-header .logo p {
-    color: #aaa;
-    font-size: 14px;
-    margin-top: 5px;
-}
-
-.logo {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-}
-
-.location {
-    color: white;
-    font-size: 14px;
-    padding: 20px 50px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-weight: bold;
-}
-
-.location-icon {
-    width: 44px;
-    height: 44px;
-}
-
-.location-details p {
-    margin: 0;
-}
-
-.sub-location p {
-    margin-top: 25px;
-    margin-bottom: 0;
-}
-
-.search-bar {
-    display: flex;
-    align-items: center;
-    margin-top: 10px;
-    padding: 0 50px;
-    width: 100%;
-}
-
-.search-input {
-    padding: 10px 20px;
-    font-size: 16px;
-    border: none;
-    outline: none;
-    border-radius: 30px 0 0 30px;
-    width: 250px;
-}
-
-.search-button {
-    padding: 10px 20px;
-    font-size: 16px;
-    border: none;
-    background-color: #f4f;
-    color: #111;
-    cursor: pointer;
-    font-weight: bold;
-    border-radius: 0 30px 30px 0;
-}
-
-.search-button:hover {
-    background-color: #e3e;
-}
-
-header .contact button {
-    background-color: #f4f;
-    border: none;
-    padding: 8px 16px;
-    color: #111;
-    cursor: pointer;
-    font-weight: bold;
-    border-radius: 5px;
-}
-
-/* Hero Section */
-.hero {
-    text-align: center;
-    padding: 50px;
-    display: block;
-    margin-right: 830px;
-}
-
-.hero h2 {
-    font-size: 36px;
-    color: #f4f;
-    margin-bottom: 10px;
-}
-
-.hero p {
-    font-size: 18px;
-    margin-bottom: 10px;
-}
-
-.hero button {
-    background-color: #f4f;
-    border: none;
-    padding: 10px 20px;
-    margin: 5px;
-    cursor: pointer;
-    color: #111;
-    border-radius: 5px;
-    font-size: 16px;
-}
-
-/* Favourite Food Section */
-.favourite-food {
-    padding: 40px 20px;
-    text-align: center;
-    margin-left: 400px;
-    margin-top: -320px;
-}
-
-.food-gallery {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 30px;
-    justify-content: center;
-    margin-top: -110px;
-}
-
-.food-gallery .image2 {
-    margin-top: -100px;
-}
-
-.food-item {
-    text-align: center;
-    max-width: 150px;
-}
-
-.food-item img {
-    width: 100%;
-    height: auto;
-    border-radius: 8px;
-}
-
-.food-item p {
-    margin-top: 10px;
-}
-
-/* What We Serve Section */
-.what-we-serve {
-    padding: 40px 20px;
-    background-color: #333;
-    text-align: center;
-}
-
-.serve-items {
-    display: flex;
-    gap: 20px;
-    overflow-x: auto;
-    justify-content: center;
-    padding-top: 20px;
-}
-
-.serve-item {
-    text-align: center;
-    min-width: 300px;
-    max-width: 350px;
-    padding: 20px;
-    background-color: #444;
-    border-radius: 8px;
-}
-
-.serve-item img {
-    width: 290px;
-    height: 290px;
-    margin-bottom: 10px;
-    border-radius: 8px;
-}
-
-.serve-item h4 {
-    margin-top: 10px;
-    color: #f4f;
-}
-
-/* Map Section */
-.map {
-    padding: 20px;
-    text-align: center;
-    background-color: #222;
-    margin-top: 40px;
-}
-
-.map iframe {
-    width: 100%;
-    max-width: 1500px;
-    height: 450px;
-    border-radius: 8px;
-    margin-top: 20px;
-}
-
-.map-info {
-    margin-top: 20px;
-    font-size: 14px;
-    color: #fff;
-    text-align: center;
-}
-
-.map-info p {
-    margin: 0;
-    font-size: 16px;
-    color: #aaa;
-}
-
-/* Footer */
-footer {
-    background-color: #222;
-    text-align: center;
-    padding: 20px;
-}
-
-.footer-content a {
-    color: #f4f;
-    margin: 0 5px;
-    text-decoration: none;
-}
-
-.footer-content a:hover {
-    text-decoration: underline;
-}
-
-.footer-content i {
-    font-size: 30px;
-    margin: 0 15px;
-    cursor: pointer;
-    color: #f4f;
-}
-
-.footer-content i:hover {
-    color: #aaa;
-}
-
-/* Media Queries for responsiveness */
-@media (max-width: 1200px) {
-    .hero {
-        margin-right: 0;
-        padding: 20px;
-    }
-
-    .food-gallery .image1 {
-        width: 80%;
-    }
-
-    .food-gallery .image2 {
-        width: 70%;
-    }
-
-    header .logo h1 {
-        font-size: 20px;
-    }
-
-    header .logo p {
-        font-size: 12px;
-    }
-
-    .search-input {
-        width: 200px;
-    }
-
-    .search-bar {
-        padding: 0 20px;
-    }
-}
-
-@media (max-width: 992px) {
-    .header-content {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .location {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 10px;
-    }
-
-    .search-bar {
-        width: 100%;
-    }
-
-    .hero h2 {
-        font-size: 28px;
-    }
-
-    .hero p {
-        font-size: 16px;
-    }
-
-    .favourite-food {
-        margin-left: 0;
-        margin-top: 20px;
-    }
-
-    .food-gallery {
-        flex-direction: column;
-        margin-top: -60px;
-    }
-
-    .food-item img {
-        width: 80%;
-    }
-
-    .map iframe {
-        height: 300px;
-    }
-}
-
-@media (max-width: 768px) {
-    .hero h2 {
-        font-size: 24px;
-    }
-
-    .hero p {
-        font-size: 14px;
-    }
-
-    .hero button {
-        font-size: 14px;
-    }
-
-    .food-gallery {
-        flex-direction: column;
-        gap: 20px;
-    }
-
-    .serve-items {
-        flex-direction: column;
-    }
-
-    .serve-item {
-        min-width: 80%;
-        max-width: 100%;
-    }
-
-    .map iframe {
-        height: 250px;
-    }
-
-    .footer-content i {
-        font-size: 24px;
-    }
-}
-
-@media (max-width: 576px) {
-    .header-content {
-        flex-direction: column;
-        text-align: center;
-    }
-
-    .location {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .hero {
-        padding: 20px;
-        margin-right: 0;
-    }
-
-    .food-gallery .image1, .food-gallery .image2 {
-        width: 100%;
-    }
-
-    .serve-items {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .serve-item {
-        width: 90%;
-        margin: 10px 0;
-    }
-
-    .map iframe {
-        height: 200px;
-    }
-
-    .footer-content i {
-        font-size: 20px;
-    }
-}
+        body {
+            background-color: #1a1a1a;
+            color: #ffffff;
+        }
+
+        .floating-food {
+            position: absolute;
+            animation: float 6s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .search-container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+        }
+
+        .action-button {
+            background-color: #9333EA;
+            transition: all 0.3s ease;
+            border-radius: 25px;
+        }
+
+        .action-button:hover {
+            transform: scale(1.05);
+            background-color: #7C3AED;
+        }
+
+        .main-image {
+            border-radius: 50%;
+            box-shadow: 0 0 0px rgba(147, 51, 234, 0.3);
+        }
     </style>
 </head>
-<body>
-    <!-- Header -->
-    <header>
-        <div class="header-content">
-            <div class="logo">
-                <img src="..\assets\image\logo.png" alt="">
+
+<body class="bg-gray-900">
+    <div class="max-w-screen-xl mx-auto p-4">
+        <!-- Header with Logo and Location -->
+        <div class="flex justify-between items-center mb-8">
+            <div class="flex items-center gap-2">
+                <img src="../assets/image/logo.png" alt="Restaurant Logo" class="h-8">
             </div>
-            <div class="contact">
-                <button><?php echo $username; ?></button>
+            <button class="bg-purple-600 px-6 py-2 rounded-full text-white">
+                <?php echo $username; ?>
+            </button>
+        </div>
+
+        <!-- Location Bar -->
+        <div class="mb-8">
+            <p class="text-gray-400 text-sm">Lokasi</p>
+            <p class="text-white">Indonesia, Aceh</p>
+            <p class="text-gray-400 text-sm">Lhokseumawe, Bukit Rata</p>
+        </div>
+
+        <!-- Welcome Section -->
+        <div class="mb-12">
+            <h1 class="text-4xl font-bold mb-2">Welcome</h1>
+            <p class="text-xl text-gray-300">Enjoy Our delicius food</p>
+            <p class="text-sm text-gray-400">Best Food made by our Passionate Chefs</p>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="search-container mb-8">
+            <form action="/search" method="get" class="flex items-center p-2">
+                <input type="text" name="query" placeholder="Search" class="w-full bg-transparent border-none focus:outline-none px-4 py-2">
+                <button class="bg-purple-600 p-2 rounded-full">
+                    <i class="bi bi-search text-white"></i>
+                </button>
+            </form>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="grid grid-cols-2 gap-4 mb-12">
+            <a href="menu.php" class="action-button py-3 px-6 text-white font-semibold text-center">
+                Menu
+            </a>
+            <a href="ReservasiDanPickup.php" class="action-button py-3 px-6 text-white font-semibold text-center">
+                Pesan
+            </a>
+        </div>
+
+        <!-- Main Food Image -->
+        <div class="relative mb-12">
+            <!-- Floating Food Images -->
+            <img src="../assets/image/makanan.png" alt="Floating Food 1" class="floating-food w-16 top-0 left-10" style="animation-delay: -2s">
+            <img src="../assets/image/makanan.png" alt="Floating Food 2" class="floating-food w-16 top-20 right-10" style="animation-delay: -1s">
+            <img src="../assets/image/makanan.png" alt="Floating Food 3" class="floating-food w-16 bottom-20 left-20" style="animation-delay: -3s">
+            
+            <!-- Main Centered Food Image -->
+            <img src="../assets/image/makanan.png" alt="Main Dish" class="main-image w-64 mx-auto">
+        </div>
+
+        <!-- What We Serve Section -->
+        <div class="text-center mb-12">
+            <h2 class="text-2xl font-bold mb-8">Your Favourite Food</h2>
+            <div class="grid grid-cols-1 gap-6">
+                <div class="text-center">
+                    <img src="../assets/image/iklan.png" alt="Easy to Use" class="w-50 h-50 mx-auto mb-4">
+                    <h3 class="text-lg mb-2">Mudah digunakan</h3>
+                    <p class="text-sm text-gray-400">Akses kapan saja dan dimana saja</p>
+                </div>
+                <div class="text-center">
+                    <img src="../assets/image/iklan2.png" alt="Quality" class="w-50 h-50 mx-auto mb-4">
+                    <h3 class="text-lg mb-2">Kualitas terbaik</h3>
+                    <p class="text-sm text-gray-400">Tidak usaha ragu bagi kualitas</p>
+                </div>
+                <div class="text-center">
+                    <img src="../assets/image/iklan.png" alt="Easy to Use" class="w-50 h-50 mx-auto mb-4">
+                    <h3 class="text-lg mb-2">Mudah digunakan</h3>
+                    <p class="text-sm text-gray-400">Akses kapan saja dan dimana saja</p>
+                </div>
             </div>
         </div>
-    </header>
 
-    <!-- Location Section -->
-    <div class="location">
-        <img src="..\assets\image\location.png" alt="Location Icon" class="location-icon">
-        <div>
-            <p>Lokasi</p>
-            <p>Indonesia, Aceh</p>
-            <p>Lhokseumawe, Bukit Rata</p>
-        </div>
-    </div>
-
-    <!-- Search Bar -->
-    <div class="search-bar">
-        <form action="/search" method="get">
-            <input type="text" name="query" placeholder="Search..." class="search-input">
-            <button type="submit" class="search-button">Search</button>
-        </form>
-    </div>
-
-    <!-- Hero Section -->
-    <section class="hero">
-        <h2>Welcome</h2>
-        <p>Enjoy Our Delicious Food</p>
-        <p>Best Food made by our Passionate Chefs</p>
-        <button class="tab active">
-        <a href="menu.php" style="text-decoration: none; color: inherit;">Menu</a>
-        </button>
-        <button>
-        <a href="ReservasiDanPickup.php" style="text-decoration: none; color: inherit;">Pesan</button>
-    </section>
-
-    <!-- Favourite Food Section -->
-    <section class="favourite-food">
-        <div class="food-gallery">
-            <img class="image1" src="..\assets\image\Group 154.png" alt="" width="920px">
-            <img class="image2" src="..\assets\image\makanan.png" alt="" width="320px">
-        </div>
-    </section>
-
-    <!-- What We Serve Section -->
-    <section class="what-we-serve">
-        <h3>Your Favourite Food</h3>
-        <div class="serve-items">
-            <div class="serve-item">
-                <img src="..\assets\image\iklan.png" alt="Mudah Digunakan">
-                <h4>Mudah Digunakan</h4>
-                <p>Anda hanya perlu menyentuh beberapa langkah untuk melakukan pemesanan</p>
+        <!-- Maps Section -->
+        <div class="rounded-lg overflow-hidden mb-8">
+        <iframe 
+            src="https://maps.google.com/maps?q=Lhokseumawe,%20Bukit%20Rata&t=&z=13&ie=UTF8&iwloc=&output=embed"
+            width="100%" 
+            height="300" 
+            style="border:0;" 
+            allowfullscreen="" 
+            loading="lazy">
+        </iframe>
+        <div class="contact-section p-6 text-white">
+            <div class="flex items-center mb-4">
+                <i class="bi bi-geo-alt text-xl mr-3 text-purple-500"></i>
+                <div>
+                    <p class="font-medium">Lokasi Kami:</p>
+                    <p class="text-gray-300">Lhokseumawe, Bukit Rata</p>
+                </div>
             </div>
-            <div class="serve-item">
-                <img src="..\assets\image\iklan2.png" alt="Kualitas Terbaik">
-                <h4>Kualitas Terbaik</h4>
-                <p>Tidak hanya cepat tapi kami kualitas juga nomor satu</p>
-            </div>
-            <div class="serve-item">
-                <img src="..\assets\image\iklan.png" alt="Mudah Digunakan">
-                <h4>Mudah Digunakan</h4>
-                <p>Anda hanya perlu menyentuh beberapa langkah untuk melakukan pemesanan</p>
+            <div class="flex items-center">
+                <i class="bi bi-telephone text-xl mr-3 text-purple-500"></i>
+                <div>
+                    <p class="font-medium">Telepon:</p>
+                    <p class="text-gray-300">+62 81234567890</p>
+                </div>
             </div>
         </div>
-    </section>
+    </div>  
 
-
-    <!-- Map Section -->
-    <section class="map">
-        <iframe src="https://maps.google.com/maps?q=Lhokseumawe,%20Bukit%20Rata&t=&z=13&ie=UTF8&iwloc=&output=embed"></iframe>
-        <div class="map-info">
-            <p>Lokasi Kami: Lhokseumawe, Bukit Rata</p>
-            <p>Tel: +62 81234567890</p>
+    <!-- Navigation -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-gray-800 p-4">
+        <div class="max-w-screen-xl mx-auto flex justify-around">
+            <a href="home.php" class="text-white flex flex-col items-center">
+                <i class="bi bi-house"></i>
+                <span class="text-sm">Home</span>
+            </a>
+            <a href="scan.php" class="text-gray-400 flex flex-col items-center">
+                <i class="bi bi-qr-code"></i>
+                <span class="text-sm">Scan</span>
+            </a>
+            <a href="keranjang.php" class="text-gray-400 flex flex-col items-center">
+                <i class="bi bi-cart"></i>
+                <span class="text-sm">Keranjang</span>
+            </a>
+            <a href="profile.php" class="text-gray-400 flex flex-col items-center">
+                <i class="bi bi-person"></i>
+                <span class="text-sm">Profile</span>
+            </a>
         </div>
-    </section>
-
-    <!-- Footer Section -->
-    <footer>
-        <div class="footer-content">
-            <a href="https://www.facebook.com" target="_blank"><i class="bi bi-facebook"></i></a>
-            <a href="https://www.instagram.com" target="_blank"><i class="bi bi-instagram"></i></a>
-            <a href="https://twitter.com" target="_blank"><i class="bi bi-twitter"></i></a>
-        </div>
-        <p>&copy; 2024 Restoran Siantar Top</p>
-    </footer>
+    </nav>
 </body>
 </html>

@@ -1,56 +1,55 @@
 <?php
+session_start();
 header('Content-Type: application/json');
 
 // Koneksi ke database
-$servername = "localhost"; // Ganti dengan server Anda
-$username = "root"; // Ganti dengan username MySQL Anda
-$password = ""; // Ganti dengan password MySQL Anda
-$dbname = "restoran"; // Ganti dengan nama database Anda
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "restoran";
 
-// Membuat koneksi
 $conn = new mysqli($servername, $username, $password, $dbname);
 
 // Cek koneksi
 if ($conn->connect_error) {
-    die(json_encode(["message" => "Connection failed: " . $conn->connect_error]));
+    echo json_encode(["message" => "Connection failed: " . $conn->connect_error]);
+    exit;
 }
 
 // Fungsi untuk sanitasi input
 function sanitizeInput($input) {
-    $input = trim($input);
-    $input = stripslashes($input);
-    $input = htmlspecialchars($input);
-    return $input;
+    return htmlspecialchars(trim($input), ENT_QUOTES, 'UTF-8');
 }
 
-// Ambil data JSON dari body request
-$data = json_decode(file_get_contents("php://input"));
+// Cek jika request adalah POST
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Ambil data JSON dari body request
+    $data = json_decode(file_get_contents("php://input"), true);
 
-// Periksa jika JSON valid
-if ($data === null) {
-    echo json_encode(["message" => "Invalid JSON input"]);
-    exit;
-}
-
-// Example rehash for manual comparison
-$new_hash = password_hash("rian", PASSWORD_DEFAULT);
-error_log("New hash generated for comparison: " . $new_hash);
-
-// Cek apakah data yang diperlukan ada dalam request
-if (isset($data->nama_pelanggan) && isset($data->password)) {
-    // Sanitasi input
-    $nama_pelanggan = sanitizeInput($data->nama_pelanggan);
-    $password = sanitizeInput($data->password);
-
-    // Query untuk memeriksa username terlebih dahulu
-    $sql = "SELECT * FROM pelanggan WHERE nama_pelanggan = ?";
-    $stmt = $conn->prepare($sql);
-    
-    if ($stmt === false) {
-        die(json_encode(["message" => "Query preparation failed: " . $conn->error]));
+    if ($data === null) {
+        echo json_encode(["message" => "Invalid JSON input"]);
+        exit;
     }
 
-    // Bind parameter untuk query
+    // Pastikan nama_pelanggan dan password disediakan
+    if (!isset($data['nama_pelanggan']) || !isset($data['password'])) {
+        echo json_encode(["message" => "Invalid input: nama_pelanggan and password are required"]);
+        exit;
+    }
+
+    // Sanitasi input
+    $nama_pelanggan = sanitizeInput($data['nama_pelanggan']);
+    $password = sanitizeInput($data['password']);
+
+    // Query untuk mencari pengguna berdasarkan nama_pelanggan
+    $sql = "SELECT * FROM pelanggan WHERE nama_pelanggan = ?";
+    $stmt = $conn->prepare($sql);
+
+    if ($stmt === false) {
+        echo json_encode(["message" => "Query preparation failed: " . $conn->error]);
+        exit;
+    }
+
     $stmt->bind_param("s", $nama_pelanggan);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -59,14 +58,14 @@ if (isset($data->nama_pelanggan) && isset($data->password)) {
         // Pengguna ditemukan
         $user = $result->fetch_assoc();
 
-        // Debugging logs
-        error_log("Received password (trimmed and sanitized): " . $password);
-        error_log("Stored password hash: " . $user['password']);
-
         // Verifikasi password
         if (password_verify($password, $user['password'])) {
             // Login berhasil
-            echo json_encode(["message" => "Login successful"]);
+            $_SESSION['id_pelanggan'] = $user['id_pelanggan']; // Simpan id_pelanggan ke session
+            echo json_encode([
+                "message" => "Login successful",
+                "id_pelanggan" => $user['id_pelanggan'] // Kirim id_pelanggan sebagai respons
+            ]);
         } else {
             // Password salah
             echo json_encode(["message" => "Incorrect password"]);
@@ -76,13 +75,11 @@ if (isset($data->nama_pelanggan) && isset($data->password)) {
         echo json_encode(["message" => "Username not found"]);
     }
 
-    // Tutup statement
     $stmt->close();
 } else {
-    // Input tidak valid
-    echo json_encode(["message" => "Invalid input: nama_pelanggan and password are required"]);
+    // Jika bukan POST
+    echo json_encode(["message" => "Invalid request method"]);
 }
 
-// Tutup koneksi
 $conn->close();
 ?>

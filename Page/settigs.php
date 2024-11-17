@@ -1,265 +1,373 @@
 <?php
-// Hardcoded user data
-$userData = [
-    "name" => "Dimas",
-    "email" => "Dimas@gmail.com",
-    "avatar" => "kepala_sekolah.jpg" // Gambar avatar
-];
+// config/database.php
+class Database {
+    private $host = "localhost";
+    private $username = "root";
+    private $password = "";
+    private $database = "restoran";
+    public $conn;
+
+    public function getConnection() {
+        $this->conn = null;
+        try {
+            $this->conn = new mysqli($this->host, $this->username, $this->password, $this->database);
+        } catch(Exception $e) {
+            echo "Connection error: " . $e->getMessage();
+        }
+        return $this->conn;
+    }
+}
+
+// models/User.php
+class User {
+    private $conn;
+    private $table = "pelanggan";
+
+    public function __construct($db) {
+        $this->conn = $db;
+    }
+
+    public function getUserById($id) {
+        $stmt = $this->conn->prepare("SELECT * FROM " . $this->table . " WHERE id_pelanggan = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_assoc();
+    }
+
+    public function updateUser($id, $data) {
+        $stmt = $this->conn->prepare("UPDATE " . $this->table . " SET nama_pelanggan = ?, email = ?, image_face = ? WHERE id_pelanggan = ?");
+        $stmt->bind_param("sssi", $data['nama_pelanggan'], $data['email'], $data['image_face'], $id);
+        return $stmt->execute();
+    }
+}
+
+// session.php
+session_start();
+if (!isset($_SESSION['id_pelanggan'])) {
+    header("Location: login.php");
+    exit();
+}
+
+// profile.php
+// require_once 'config/database.php';
+// require_once 'models/User.php';
+
+$database = new Database();
+$db = $database->getConnection();
+$user = new User($db);
+
+$id_pelanggan = $_SESSION['id_pelanggan'];
+$userData = $user->getUserById($id_pelanggan);
 
 // Handle logout
-if (isset($_POST['logout'])) {
-    setcookie('user_email', '', time() - 3600); // Expire the cookie
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['logout'])) {
+    session_destroy();
     header("Location: login.php");
     exit();
 }
 ?>
+ 
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Account Settings</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"> <!-- Bootstrap Icons -->
+    <title>Settings | Restaurant App</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
-            margin: 0;
-            padding: 0;
+            background-color: #1a1a1a;
+            color: #ffffff;
         }
 
-        .container {
-            max-width: 480px;
-            margin: 30px auto;
+        .settings-container {
+            max-width: 768px;
+            margin: 0 auto;
             padding: 20px;
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .header h1 {
-            font-size: 24px;
-            color: #333;
-            margin: 0;
+            min-height: calc(100vh - 80px);
         }
 
         .profile-header {
+            background: linear-gradient(135deg, #9333EA 0%, #7C3AED 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+        }
+
+        .avatar-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+        }
+
+        .avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+        }
+
+        .avatar-upload {
+            position: absolute;
+            bottom: 5px;
+            right: 0;
+            background: #9333EA;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 30px;
-        }
-
-        .profile-header img {
-            border-radius: 50%;
-            width: 80px;
-            height: 80px;
-            margin-right: 20px;
-        }
-
-        .profile-header div {
-            text-align: left;
-        }
-
-        .profile-header div strong {
-            font-size: 18px;
-            color: #333;
-        }
-
-        .profile-header div small {
-            font-size: 14px;
-            color: #777;
-        }
-
-        .settings-menu {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .settings-menu li {
-            padding: 12px;
-            background: #f9f9f9;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
             cursor: pointer;
-            transition: background-color 0.3s;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
         }
 
-        .settings-menu li:hover {
-            background-color: #f1f1f1;
+        .avatar-upload:hover {
+            transform: scale(1.1);
+            background: #7C3AED;
         }
 
-        .settings-menu li i {
-            margin-right: 15px;
-            font-size: 20px;
-            color: #333;
+        .input-group {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            backdrop-filter: blur(10px);
         }
 
-        .logout-button {
+        .input-field {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .input-field:last-child {
+            margin-bottom: 0;
+        }
+
+        .input-field input {
             width: 100%;
-            padding: 15px;
-            background: #ff4d4d;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
+            padding: 12px 40px 12px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            font-size: 14px;
+            color: #ffffff;
+            transition: all 0.3s ease;
+        }
+
+        .input-field input:focus {
+            border-color: #9333EA;
+            box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.1);
+            outline: none;
+        }
+
+        .input-field input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .input-field i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.5);
             cursor: pointer;
-            text-align: center;
-            margin-top: 20px;
+            transition: color 0.3s ease;
         }
 
-        .logout-button:hover {
-            background: #e03333;
+        .input-field i:hover {
+            color: #9333EA;
         }
 
-        /* Bottom Navbar */
-        .navbar {
+        .bottom-nav {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            background: #fff;
-            box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.1);
+            background: #1a1a1a;
+            padding: 15px;
+            box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.3);
             display: flex;
             justify-content: space-around;
-            padding: 10px 0;
             z-index: 1000;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .navbar a {
-            color: black;
-            text-decoration: none;
+        .nav-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            font-size: 12px;
+            color: #6B7280;
+            transition: color 0.3s ease;
         }
 
-        .navbar a i {
-            font-size: 24px;
-            margin-bottom: 3px;
+        .nav-item.active {
+            color: #9333EA;
         }
 
-        /* Responsive Design */
-        @media (max-width: 500px) {
-            .container {
-                padding: 15px;
-            }
-
-            .profile-header img {
-                width: 60px;
-                height: 60px;
-            }
-
-            .settings-menu li {
-                padding: 10px;
-            }
-        }
-
-        .navbar {
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 0;
-            margin-top: 20px;
-            background-color: white;
-            border-top: 1px solid #ccc;
-        }
-        .navbar button {
-            background: none;
-            border: none;
-            padding: 0;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            flex-direction: column;
-            font-size: 12px;
-            color: #333;
-        }
-        .navbar img {
-            width: 25px;
-            height: 25px;
+        .nav-icon {
+            font-size: 20px;
             margin-bottom: 5px;
         }
 
-        .navbar a {
-        text-decoration: none;
-        color: inherit; /* Agar warna teks mengikuti warna elemen induknya */
-        }   
+        .logout-button {
+            background-color: rgba(220, 38, 38, 0.2);
+            color: #ef4444;
+            width: 100%;
+            padding: 15px;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 30px;
+        }
 
-        .settings-menu a {
-        text-decoration: none;
-        color: inherit; /* Membuat warna teks mengikuti warna elemen orang tua */
-    }
+        .logout-button:hover {
+            background-color: rgba(220, 38, 38, 0.3);
+            transform: translateY(-2px);
+        }
 
-    .settings-menu a:hover {
-    color: #007bff; /* Memberikan warna hover untuk elemen */
-}
+        @media (max-width: 640px) {
+            .settings-container {
+                padding: 15px;
+            }
+
+            .profile-header {
+                border-radius: 15px;
+                padding: 20px;
+            }
+
+            .avatar-container {
+                width: 100px;
+                height: 100px;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Header -->
-        <div class="header">
-            <h1>Account Settings</h1>
-        </div>
+    <div class="settings-container pb-24">
+        <!-- Back Button -->
+        <button onclick="window.history.back()" class="mb-4 flex items-center text-gray-400 hover:text-white">
+            <i class="bi bi-arrow-left text-xl mr-2"></i>
+            <span>Back</span>
+        </button>
 
         <!-- Profile Header -->
         <div class="profile-header">
-          <img src="../assets/image/icon/icon_avatar.png" alt="User Avatar">
-            <div>
-                <strong><?php echo htmlspecialchars($userData['name']); ?></strong><br>
-                <small><?php echo htmlspecialchars($userData['email']); ?></small>
-            </div>
+            <form id="imageForm" enctype="multipart/form-data">
+                <div class="avatar-container">
+                    <?php if (!empty($userData['image_face'])): ?>
+                        <img src="data:image/jpeg;base64,<?php echo base64_encode($userData['image_face']); ?>" alt="Profile" class="avatar" id="preview-image">
+                    <?php else: ?>
+                        <img src="../assets/image/icon/icon_avatar.png" alt="Profile" class="avatar" id="preview-image">
+                    <?php endif; ?>
+                    <label for="profile_image" class="avatar-upload">
+                        <i class="bi bi-pencil-fill text-white text-sm"></i>
+                    </label>
+                    <input type="file" id="profile_image" name="profile_image" class="hidden" accept="image/*" onchange="previewImage(this)">
+                </div>
+            </form>
         </div>
 
-        <!-- Settings Menu -->
-        <ul class="settings-menu">
-            <li title="Update your profile details">
-                <i class="bi bi-person-circle"></i> Profile
-            </li>
-            <li title="Change your password">
-                <i class="bi bi-lock"></i> Change Password
-            </li>
-            <li title="Change your language preferences">
-                <i class="bi bi-translate"></i> Language Settings
-            </li>
-            <li title="Manage your privacy and security">
-                <i class="bi bi-shield-lock"></i> Privacy & Security
-            </li>
-            <li title="Update notification preferences">
-                <i class="bi bi-bell"></i> Notifications
-            </li>
-        </ul>
+        <!-- Settings Form -->
+        <form method="POST" class="input-group">
+            <div class="input-field">
+                <input type="text" name="name" placeholder="Full Name" 
+                    value="<?php echo htmlspecialchars($userData['nama_pelanggan']); ?>">
+                <i class="bi bi-pencil"></i>
+            </div>
+            <div class="input-field">
+                <input type="text" name="username" placeholder="Username" 
+                    value="<?php echo htmlspecialchars($userData['nama_pelanggan']); ?>">
+                <i class="bi bi-pencil"></i>
+            </div>
+            <div class="input-field">
+                <input type="email" name="email" placeholder="Email" 
+                    value="<?php echo htmlspecialchars($userData['email']); ?>">
+                <i class="bi bi-pencil"></i>
+            </div>
+            <button type="submit" name="update_profile" class="w-full mt-4 bg-purple-600 text-white py-3 rounded-lg hover:bg-purple-700 transition-colors">
+                Save Changes
+            </button>
+        </form>
 
         <!-- Logout Button -->
         <form method="POST" action="">
-            <button type="submit" name="logout" class="logout-button">Save</button>
+            <button type="submit" name="logout" class="logout-button">
+                <i class="bi bi-box-arrow-right mr-2"></i>
+                Logout
+            </button>
         </form>
     </div>
 
-    <!-- Bottom Navbar -->
-    <<div class="navbar">
-        <a href="home.php">
-            <button><img src="../assets/image/icon/Home.png" alt="Home" /><span>Home</span></button>
-        </a>
-        <a href="scan.php">
-            <button><img src="../assets/image/icon/Scan.svg" alt="QR" /><span>Scan</span></button>
-        </a>
-        <a href="keranjang.php">
-            <button><img src="../assets/image/icon/Document.png" alt="Pesan" /><span>Pesan</span></button>
-        </a>
-        <a href="profile.php">
-            <button><img src="../assets/image/icon/Profile.png" alt="Profile" /><span>Profile</span></button>
-    </a>
-</div>
+    <!-- Bottom Navigation -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-gray-800 p-4">
+        <div class="max-w-screen-xl mx-auto flex justify-around">
+            <a href="home.php" class="text-gray-400 flex flex-col items-center">
+                <i class="bi bi-house"></i>
+                <span class="text-sm">Home</span>
+            </a>
+            <a href="scan.php" class="text-gray-400 flex flex-col items-center">
+                <i class="bi bi-qr-code"></i>
+                <span class="text-sm">Scan</span>
+            </a>
+            <a href="keranjang.php" class="text-gray-400 flex flex-col items-center">
+                <i class="bi bi-cart"></i>
+                <span class="text-sm">Keranjang</span>
+            </a>
+            <a href="profile.php" class="text-white flex flex-col items-center">
+                <i class="bi bi-person"></i>
+                <span class="text-sm">Profile</span>
+            </a>
+        </div>
+    </nav>
+
+    <script>
+        function previewImage(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('preview-image').src = e.target.result;
+                }
+                reader.readAsDataURL(input.files[0]);
+                
+                // Auto submit form when image is selected
+                const formData = new FormData(document.getElementById('imageForm'));
+                fetch('update_profile_image.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Show success message
+                        alert('Profile image updated successfully');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            }
+        }
+
+        // Add focus effects to input fields
+        document.querySelectorAll('.input-field input').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.querySelector('i').style.color = '#9333EA';
+            });
+
+            input.addEventListener('blur', function() {
+                this.parentElement.querySelector('i').style.color = 'rgba(255, 255, 255, 0.5)';
+            });
+        });
+    </script>
 </body>
 </html>
