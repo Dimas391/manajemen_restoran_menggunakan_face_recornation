@@ -5,13 +5,9 @@ import mysql.connector
 from mysql.connector import Error
 import logging
 import io
-from PIL import Image
 
 # Configure logging
-logging.basicConfig(
-    level=logging.DEBUG,
-    format='%(asctime)s - %(levelname)s - %(message)s'
-)
+logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
@@ -29,182 +25,185 @@ def connect_database():
         logger.error(f"Database connection error: {e}")
         return None
 
-def preprocess_image(image_data):
-    """
-    Preprocess image to standardize size and quality for face detection.
-    """
-    try:
-        img = Image.open(io.BytesIO(image_data.read()))
-        if img.mode != 'RGB':
-            img = img.convert('RGB')
-        max_size = 1024
-        img.thumbnail((max_size, max_size), Image.LANCZOS)
-        return img
-    except Exception as e:
-        logger.error(f"Image preprocessing error: {e}")
+def encode_face_to_vector(image):
+    """Convert face image to 1x128 vector encoding and store as bytes."""
+    face_encoding = face_recognition.face_encodings(image)
+    if len(face_encoding) == 0:
         return None
-
-def get_face_encoding(image):
-    """
-    Get face encoding from the image.
-    """
-    try:
-        image_np = np.array(image)
-        face_locations = face_recognition.face_locations(image_np)
-        if not face_locations:
-            logger.warning("No face detected in the image.")
-            return None
-        encodings = face_recognition.face_encodings(image_np, face_locations)
-        return encodings[0] if encodings else None
-    except Exception as e:
-        logger.error(f"Face encoding error: {e}")
-        return None
-
-def normalize_encoding(encoding):
-    """
-    Normalize face encoding to standard format.
-    """
-    try:
-        encoding = np.array(encoding, dtype=np.float64)
-        encoding = encoding.flatten()
-        if len(encoding) > 128:
-            encoding = encoding[:128]
-        elif len(encoding) < 128:
-            encoding = np.pad(encoding, (0, 128 - len(encoding)), mode='constant')
-        norm = np.linalg.norm(encoding)
-        return encoding / norm if norm > 0 else encoding
-    except Exception as e:
-        logger.error(f"Encoding normalization error: {e}")
-        return None
-
-def compare_encodings(encoding1, encoding2):
-    """
-    Compare face encodings with multiple similarity metrics.
-    """
-    try:
-        encoding1 = normalize_encoding(encoding1)
-        encoding2 = normalize_encoding(encoding2)
-        if encoding1 is None or encoding2 is None:
-            return False, 0.0
-        euclidean_distance = np.linalg.norm(encoding1 - encoding2)
-        similarity_score = 1 / (1 + euclidean_distance)
-        return similarity_score > 0.5, float(similarity_score)  # Adjust threshold as needed
-    except Exception as e:
-        logger.error(f"Encoding comparison error: {e}")
-        return False, 0.0
+    # Ensure proper serialization of the numpy array
+    return face_encoding[0].astype(np.float64).tobytes()
 
 @app.route('/register', methods=['POST'])
 def register():
     """Register a new face with email."""
-    if 'image' not in request.files or 'email' not in request.form:
-        return jsonify({'status': 'error', 'message': 'Image and email are required'}), 400
-
     try:
+        if 'image' not in request.files or 'email' not in request.form:
+            return jsonify({
+                'status': 'error',
+                'message': 'Image and email are required'
+            }), 400
+
         image_file = request.files['image']
         email = request.form['email']
-        image = preprocess_image(image_file)
-        if image is None:
-            return jsonify({'status': 'error', 'message': 'Invalid image format'}), 400
 
-        face_encoding = get_face_encoding(image)
+        # Read and process image
+        image_stream = io.BytesIO(image_file.read())
+        img = face_recognition.load_image_file(image_stream)
+        
+        # Get face encoding
+        face_encoding = encode_face_to_vector(img)
         if face_encoding is None:
-            return jsonify({'status': 'error', 'message': 'No face detected in image'}), 400
+            return jsonify({
+                'status': 'error',
+                'message': 'No face detected in image'
+            }), 400
 
-        face_encoding = normalize_encoding(face_encoding)
-        if face_encoding is None:
-            return jsonify({'status': 'error', 'message': 'Error processing face encoding'}), 400
-
+        # Store in database
         conn = connect_database()
         if conn is None:
-                      return jsonify({'status': 'error', 'message': 'Database connection failed'}), 500
+            return jsonify({
+                'status': 'error',
+                'message': 'Database connection failed'
+            }), 500
 
         try:
-            cursor = conn.cursor()
-            cursor.execute(
-                "INSERT INTO pelanggan (email, image_face) VALUES (%s, %s) "
-                "ON DUPLICATE KEY UPDATE image_face = VALUES(image_face)",
-                (email, face_encoding.tobytes())
-            )
-            conn.commit()
-            return jsonify({'status': 'success', 'message': 'Face registered successfully'})
+            with conn.cursor() as cursor:
+                # Check if email already exists
+                cursor.execute("SELECT id_pelanggan FROM pelanggan WHERE email = %s", (email,))
+                if cursor.fetchone():
+                    return jsonify({
+                        'status': 'error',
+                        'message': 'Email already registered'
+                    }), 400
+
+                # Insert new record
+                cursor.execute(
+                    "INSERT INTO pelanggan (email, image_face) VALUES (%s, %s)",
+                    (email, face_encoding)
+                )
+                conn.commit()
+
+                return jsonify({
+                    'status': 'success',
+                    'message': 'Face registered successfully'
+                })
+
         finally:
             conn.close()
 
     except Exception as e:
         logger.error(f"Registration error: {e}")
-        return jsonify({'status': 'error', 'message': str(e)}), 500
+        return jsonify({
+            'status': 'error',
+            'message': f'Registration failed: {str(e)}'
+        }), 500
+
 @app.route('/compare_faces', methods=['POST'])
 def compare_faces():
-    """Compare uploaded face with stored face."""
-    if 'email' not in request.form or 'uploaded_image' not in request.files:
-        return jsonify({'status': 'error', 'message': 'Email and image are required'}), 400
-
-    conn = None
+    """Enhanced face comparison endpoint with better error handling and logging."""
+    logger.info("Received face comparison request")
+    
     try:
+        # Validate request
+        if 'uploaded_image' not in request.files:
+            return jsonify({
+                'status': 'error',
+                'message': 'No image file uploaded'
+            }), 400
+            
+        if 'email' not in request.form:
+            return jsonify({
+                'status': 'error',
+                'message': 'Email is required'
+            }), 400
+
+        # Read and process uploaded image
+        image_stream = io.BytesIO(request.files['uploaded_image'].read())
+        img = face_recognition.load_image_file(image_stream)
+        
+        # Get face encodings
+        face_locations = face_recognition.face_locations(img)
+        if not face_locations:
+            return jsonify({
+                'status': 'error',
+                'message': 'No face detected in uploaded image'
+            }), 400
+            
+        encodings = face_recognition.face_encodings(img, face_locations)
+        if not encodings:
+            return jsonify({
+                'status': 'error',
+                'message': 'Could not encode face from image'
+            }), 400
+
+        uploaded_face_encoding = encodings[0]
         email = request.form['email']
-        uploaded_image = request.files['uploaded_image']
-
-        # Process uploaded image
-        image = preprocess_image(uploaded_image)
-        if image is None:
-            return jsonify({'status': 'error', 'message': 'Invalid image format'}), 400
-
-        # Get face encoding
-        uploaded_encoding = get_face_encoding(image)
-        if uploaded_encoding is None:
-            return jsonify({'status': 'error', 'message': 'No face detected in uploaded image'}), 400
 
         # Get stored encoding from database
         conn = connect_database()
         if conn is None:
-            return jsonify({'status': 'error', 'message': 'Database connection failed'}), 500
+            return jsonify({
+                'status': 'error',
+                'message': 'Database connection failed'
+            }), 500
 
-        cursor = conn.cursor()
-        cursor.execute("SELECT image_face FROM pelanggan WHERE email = %s", (email,))
-        result = cursor.fetchone()
-
-        if not result or not result[0]:
-            return jsonify({'status': 'error', 'message': 'No stored face found for this email'}), 404
-
-        # Compare faces
         try:
-            stored_encoding = np.frombuffer(result[0], dtype=np.float64)
+            with conn.cursor(dictionary=True) as cursor:
+                cursor.execute(
+                    "SELECT image_face FROM pelanggan WHERE email = %s",
+                    (email,)
+                )
+                result = cursor.fetchone()
 
-            # Check if the length of the stored encoding is correct
-            if stored_encoding.size != 128:  # Assuming face encodings are of size 128
-                logger.error("Stored encoding size is incorrect.")
+                if not result or not result['image_face']:
+                    return jsonify({
+                        'status': 'error',
+                        'message': 'No stored face found for this email'
+                    }), 404
+
+                # Convert stored encoding back to numpy array
+                stored_encoding = np.frombuffer(result['image_face'], dtype=np.float64)
+                
+                # Ensure proper shape for comparison
+                if len(stored_encoding) != 128:
+                    return jsonify({
+                        'status': 'error',
+                        'message': 'Invalid stored face encoding'
+                    }), 500
+
+                # Reshape for face_recognition library
+                stored_encoding = stored_encoding.reshape(1, -1)
+
+                # Compare faces
+                matches = face_recognition.compare_faces(
+                    stored_encoding, 
+                    uploaded_face_encoding,
+                    tolerance=0.6
+                )
+                
+                # Calculate confidence score
+                face_distance = face_recognition.face_distance(
+                    stored_encoding,
+                    uploaded_face_encoding
+                )[0]
+                confidence = float(1 - face_distance)
+                
                 return jsonify({
                     'status': 'success',
-                    'match': False,
-                    'confidence': 0.0,
-                    'message': 'Face comparison failed due to invalid stored encoding size'
+                    'match': bool(matches[0]),
+                    'confidence': confidence,
+                    'message': 'Face comparison complete'
                 })
 
-            match, confidence = compare_encodings(stored_encoding, uploaded_encoding)
-
-        except ValueError as e:
-            logger.error(f"ValueError during face comparison: {e}")
-            return jsonify({
-                'status': 'success',
-                'match': False,
-                'confidence': 0.0,
-                'message': 'Face comparison failed due to an internal error'
-            })
-
-        return jsonify({
-            'status': 'success',
-            'match': match,
-            'confidence': confidence,
-            'message': 'Face matched successfully' if match else 'Face did not match'
-        })
+        finally:
+            conn.close()
 
     except Exception as e:
         logger.error(f"Face comparison error: {e}")
-        return jsonify({'status': 'error', 'message': str(e)}), 500
-
-    finally:
-        if conn is not None:
-            conn.close()
+        return jsonify({
+            'status': 'error',
+            'message': f'Face comparison failed: {str(e)}'
+        }), 500
 
 if __name__ == '__main__':
     app.run(debug=True)

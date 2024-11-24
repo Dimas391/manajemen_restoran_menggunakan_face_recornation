@@ -285,15 +285,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['logout'])) {
                 <i class="bi bi-pencil"></i>
             </div>
             <div class="input-field">
-                <input type="text" name="username" placeholder="Username" 
-                    value="<?php echo htmlspecialchars($userData['nama_pelanggan']); ?>">
-                <i class="bi bi-pencil"></i>
+            <input type="text" name="name" placeholder="Full Name" 
+                value="<?php echo htmlspecialchars($userData['nama_pelanggan']); ?>" disabled>
+            <i class="bi bi-pencil" data-field="name" onclick="editField(this)"></i>
             </div>
             <div class="input-field">
                 <input type="email" name="email" placeholder="Email" 
-                    value="<?php echo htmlspecialchars($userData['email']); ?>">
-                <i class="bi bi-pencil"></i>
+                    value="<?php echo htmlspecialchars($userData['email']); ?>" disabled>
+                <i class="bi bi-pencil" data-field="email" onclick="editField(this)"></i>
             </div>
+
             <button type="submit" name="update_profile" class="w-full mt-4 bg-purple-600 text-white py-3 rounded-lg hover:bg-purple-700 transition-colors">
                 Save Changes
             </button>
@@ -329,6 +330,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['logout'])) {
             </a>
         </div>
     </nav>
+
+    <script>
+    async function updateProfile(field, value) {
+        const response = await fetch("update_profile.php", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ field, value }),
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            alert("Profile berhasil diperbarui!");
+        } else {
+            alert("Gagal memperbarui profile: " + (result.message || "Unknown error"));
+        }
+    }
+
+    function editField(element) {
+        const field = element.getAttribute("data-field");
+        const input = element.previousElementSibling;
+        input.disabled = false;
+        input.focus();
+
+        input.addEventListener("blur", () => {
+            updateProfile(field, input.value);
+            input.disabled = true;
+        });
+    }
+</script>
+
 
     <script>
         function previewImage(input) {

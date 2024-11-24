@@ -1,7 +1,7 @@
 <?php
 include "session.php";
 
-// Database connection code remains the same
+// Database connection code
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -13,8 +13,16 @@ if ($conn->connect_error) {
     die("Koneksi gagal: " . $conn->connect_error);
 }
 
-$sql = "SELECT id_menu, nama_menu, keterangan, harga, gambar_menu, kategori FROM menu";
-$result = $conn->query($sql);
+// Ambil kata kunci pencarian
+$search_query = isset($_GET['search']) ? $_GET['search'] : '';
+
+// Ambil menu berdasarkan kategori dan pencarian
+$sql = "SELECT id_menu, nama_menu, keterangan, harga, gambar_menu, kategori FROM menu WHERE nama_menu LIKE ? OR keterangan LIKE ?";
+$stmt = $conn->prepare($sql);
+$search_param = '%' . $search_query . '%';
+$stmt->bind_param("ss", $search_param, $search_param);
+$stmt->execute();
+$result = $stmt->get_result();
 
 $menu_by_category = [];
 if ($result && $result->num_rows > 0) {
@@ -45,7 +53,6 @@ $conn->close();
 
         .header {
             background: linear-gradient(50deg, #9333EA 0%, #7C3AED 100%);
-            background-size: cover;
             padding: 2rem 1rem;
             border-radius: 0 0 30px 30px;
             margin-bottom: 2rem;
@@ -125,7 +132,7 @@ $conn->close();
             padding: 1rem;
             display: flex;
             justify-content: space-around;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid rgba(255, 255,         255, 0.1);
             z-index: 1000;
         }
 
@@ -192,8 +199,11 @@ $conn->close();
         </div>
         
         <div class="search-bar">
-            <i class="bi bi-search text-gray-400 mr-2"></i>
-            <input type="text" placeholder="Search menu..." class="search-input">
+            <form method="GET" action="menu.php" class="flex items-center w-full">
+                <i class="bi bi-search text-gray-400 mr-2"></i>
+                <input type="text" name="search" placeholder="Search menu..." class="search-input" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
+                <button type="submit" class="hidden">Search</button> <!-- Tombol tersembunyi untuk submit -->
+            </form>
         </div>
     </div>
 
@@ -212,6 +222,10 @@ $conn->close();
 
     <div class="menu-grid">
         <?php
+        if ($search_query) {
+            echo '<h2 class="text-white mb-4">Hasil pencarian untuk: <strong>' . htmlspecialchars($search_query) . '</strong></h2>';
+        }
+
         $selected_category = isset($_GET['kategori']) ? $_GET['kategori'] : 'All';
 
         if ($selected_category === 'All') {
@@ -233,7 +247,7 @@ $conn->close();
                     <a href="detail_order.php?id_menu='.$menu['id_menu'].'" class="menu-item">
                         <img src="../assets/allmenu/'.$menu['gambar_menu'].'" alt="'.$menu['nama_menu'].'">
                         <h3 class="font-semibold text-white mb-1">'.$menu['nama_menu'].'</h3>
-                        <p class="text-gray-400 text-sm mb-2">'.$menu['keterangan'].'</p>
+                                               <p class="text-gray-400 text-sm mb-2">'.$menu['keterangan'].'</p>
                         <div class="text-purple-400 font-bold">Rp '.number_format($menu['harga'], 0, ',', '.').'</div>
                     </a>';
                 }

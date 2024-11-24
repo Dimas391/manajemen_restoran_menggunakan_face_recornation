@@ -34,6 +34,14 @@ try {
     $stmt_cart->execute();
     $result_cart = $stmt_cart->get_result();
 
+    $message = "Your order has been placed successfully!"; // Notification message
+
+    $sql = "INSERT INTO notifications (id_pelanggan, message) VALUES (?, ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("is", $id_pelanggan, $message);
+    $stmt->execute();
+    $stmt->close();
+
     // 2. Hapus semua item di keranjang untuk pelanggan ini
     $query_delete = "DELETE FROM keranjang WHERE id_pelanggan = ?";
     $stmt_delete = $conn->prepare($query_delete);
