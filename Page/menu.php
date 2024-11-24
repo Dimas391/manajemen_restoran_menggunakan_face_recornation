@@ -1,36 +1,28 @@
 <?php
 include "session.php";
 
-// Koneksi ke database MySQL
-$servername = "localhost";  // Ganti dengan nama server MySQL Anda
-$username = "root";         // Ganti dengan username MySQL Anda
-$password = "";             // Ganti dengan password MySQL Anda
-$dbname = "restoran";  // Ganti dengan nama database Anda
+// Database connection code remains the same
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "restoran";
 
-// Membuat koneksi
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-// Memeriksa koneksi
 if ($conn->connect_error) {
     die("Koneksi gagal: " . $conn->connect_error);
 }
 
-// Query untuk mengambil data menu
-$sql = "SELECT id_menu, nama_menu, keterangan, harga, gambar_menu, kategori FROM menu"; // Ganti 'menu' dengan nama tabel Anda
+$sql = "SELECT id_menu, nama_menu, keterangan, harga, gambar_menu, kategori FROM menu";
 $result = $conn->query($sql);
 
-// Mengelompokkan menu berdasarkan kategori
-$menu_by_category = []; // Inisialisasi variabel sebagai array kosong
+$menu_by_category = [];
 if ($result && $result->num_rows > 0) {
     while($row = $result->fetch_assoc()) {
         $menu_by_category[$row['kategori']][] = $row;
     }
-} else {
-    // Jika tidak ada data, Anda bisa menambahkan logika di sini jika diperlukan
-    // Misalnya, menampilkan pesan bahwa tidak ada menu yang tersedia
 }
 
-// Tutup koneksi
 $conn->close();
 ?>
 
@@ -39,199 +31,242 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menu</title>
+    <title>Menu - Restoran Siantar Top</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <style>
-    /* CSS styles */
-    body {
-        background-color: #f3f3f3;
-        color: #333;
-        margin: 0; /* Menghapus margin default */
-        height: 100vh; /* Mengatur tinggi body */
-        overflow: hidden; /* Mencegah scroll pada body */
-    }
+        body {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            margin: 0;
+            min-height: 100vh;
+            padding-bottom: 70px;
+        }
 
-    .container {
-        height: calc(100vh - 60px); /* Mengatur tinggi kontainer agar sesuai dengan tinggi viewport */
-        overflow-y: auto; /* Menambahkan scroll vertikal */
-    }
+        .header {
+            background: linear-gradient(50deg, #9333EA 0%, #7C3AED 100%);
+            background-size: cover;
+            padding: 2rem 1rem;
+            border-radius: 0 0 30px 30px;
+            margin-bottom: 2rem;
+        }
 
-    .header {
-        background: linear-gradient(50deg, #6366f1 0%, #4f46e5 100%);
-        background-size: cover;
-        height: 150px;
-        border-radius: 0 0 20px 20px;
-        color: white;
-        text-align: center;
-    }
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 1.5rem;
+            padding: 1rem;
+        }
 
-    .menu-title {
-        font-size: 24px;
-        font-weight: bold;
-        margin: 20px 0;
-    }
+        .menu-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 1rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
 
-    .menu-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(150px, 2fr));
-        gap: 15px;
-        padding: 10px; /* Menambahkan padding untuk grid */
-    }
-
-    .menu-item {
-        background-color: white;
-        border-radius: 12px;
-        padding: 15px;
-        text-align: center;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        transition: transform 0.2s;
-    }
-
-    .menu-item:hover {
-        transform: scale(1.05);
-    }
-
-    .menu-item img {
-        width: 80px;
-        height: 80px;
-        border-radius: 50%;
-        margin-bottom: 10px;
-    }
-
-    .bottom-nav {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: white;
-        padding: 12px 8px;
-        box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
-        display: flex;
-        justify-content: space-around;
-        z-index: 1000;
-    }
-
-    /* Navigation items */
-    .nav-item {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        color: #6B7280;
-        font-size: 12px;
-        padding: 4px 8px;
-    }
-
-    .nav-item.active {
-        color: #4F46E5;
-    }
-
-    .nav-icon {
-        font-size: 20px;
-        margin-bottom: 4px;
-    }
-
-    /* Media Queries for Mobile */
-    @media (max-width: 240px) {
-        .menu-title {
-            font-size: 20px; /* Ukuran font lebih kecil untuk mobile */
+        .menu-item:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
         }
 
         .menu-item img {
-            width: 60px; /* Ukuran gambar lebih kecil untuk mobile */
-            height: 60px;
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 15px;
+            margin-bottom: 1rem;
+        }
+
+        .category-tabs {
+            display: flex;
+            overflow-x: auto;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            margin-bottom: 1rem;
+        }
+
+        .category-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .category-tab {
+            padding: 0.75rem 1.5rem;
+            border-radius: 20px;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .category-tab.active {
+            background: #9333EA;
+            box-shadow: 0 4px 12px rgba(147, 51, 234, 0.3);
+        }
+
+        .category-tab:not(.active) {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .category-tab:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .nav-bottom {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #262626;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
         }
 
         .nav-item {
-            font-size: 10px; /* Ukuran font lebih kecil untuk mobile */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #9CA3AF;
+            font-size: 0.875rem;
+            transition: color 0.3s ease;
+            text-decoration: none;
         }
 
-        .bottom-nav {
-            padding: 8px 4px; /* Padding lebih kecil untuk mobile */
+        .nav-item.active {
+            color: #9333EA;
         }
-    }
-</style>
+
+        .nav-icon {
+            font-size: 1.25rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .search-bar {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            margin: 1rem;
+            padding: 0.5rem 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-input {
+            background: transparent;
+            border: none;
+            color: white;
+            width: 100%;
+            padding: 0.5rem;
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .search-input:focus {
+            outline: none;
+        }
+
+        .empty-message {
+            text-align: center;
+            color: #9CA3AF;
+            padding: 2rem;
+            grid-column: 1 / -1;
+        }
+    </style>
 </head>
 <body>
-<div class="container mx-auto p-4">
     <div class="header">
-        <h1 class="menu-title">Menu</h1>
-        <div class="back-button">
+        <div class="flex justify-between items-center mb-4">
             <a href="home.php" class="text-white">
-                <i class="bi bi-arrow-left"></i> Kembali
+                <i class="bi bi-arrow-left text-2xl"></i>
             </a>
+            <h1 class="text-2xl font-bold">Our Menu</h1>
+            <div class="w-8"></div>
+        </div>
+        
+        <div class="search-bar">
+            <i class="bi bi-search text-gray-400 mr-2"></i>
+            <input type="text" placeholder="Search menu..." class="search-input">
         </div>
     </div>
 
-    <!-- Tabs for Categories -->
-    <div class="flex flex-wrap justify-around mt-4 mb-4">
-        <a href="menu.php" class="bg-indigo-600 text-white px-4 py-2 rounded mb-2">All</a>
-        <a href="menu.php?kategori=Chicken" class="bg-gray-200 text-gray-700 px-4 py-2 rounded mb-2">Chicken</a>
-        <a href="menu.php?kategori=Beef" class="bg-gray-200 text-gray-700 px-4 py-2 rounded mb-2">Beef</a>
-        <a href="menu.php?kategori=Vegetarian" class="bg-gray-200 text-gray-700 px-4 py-2 rounded mb-2">Vegetarian</a>
-        <a href="menu.php?kategori=Drink" class="bg-gray-200 text-gray-700 px-4 py-2 rounded mb-2">Drink</a>
-        <a href="menu.php?kategori=Dessert" class="bg-gray-200 text-gray-700 px-4 py-2 rounded mb-2">Dessert</a>
+    <div class="category-tabs">
+        <a href="menu.php" class="category-tab <?php echo !isset($_GET['kategori']) ? 'active' : ''; ?>">
+            All Menu
+        </a>
+        <?php
+        $categories = ['Chicken', 'Beef', 'Vegetarian', 'Drink', 'Dessert'];
+        foreach ($categories as $category) {
+            $isActive = isset($_GET['kategori']) && $_GET['kategori'] === $category;
+            echo '<a href="menu.php?kategori='.$category.'" class="category-tab '.($isActive ? 'active' : '').'">'.$category.'</a>';
+        }
+        ?>
     </div>
 
-    <div class="menu-scroll mt-4">
-        <div class="menu-grid">
-            <?php
-            // Menampilkan menu berdasarkan kategori yang dipilih
-            $selected_category = isset($_GET['kategori']) ? $_GET['kategori'] : 'All';
+    <div class="menu-grid">
+        <?php
+        $selected_category = isset($_GET['kategori']) ? $_GET['kategori'] : 'All';
 
-            if ($selected_category === 'All') {
-                // Tampilkan semua menu
-                foreach ($menu_by_category as $category => $menus) {
-                    foreach ($menus as $menu) {
-                        echo '
-                        <a href="detail_order.php?id_menu='.$menu['id_menu'].'" class="menu-item">
-                            <img src="../assets/allmenu/'.$menu['gambar_menu'].'" alt="'.$menu['nama_menu'].'">
-                            <h3 class="font-semibold">'.$menu['nama_menu'].'</h3>
-                            <p class="text-gray-600">'.$menu['keterangan'].'</p>
-                            <div class="price text-lg font-bold">Rp '.number_format($menu['harga'], 0, ',', '.').'</div>
-                        </a>';
-                    }
-                }
-            } else {
-                // Tampilkan menu berdasarkan kategori yang dipilih
-                if (isset($menu_by_category[$selected_category])) {
-                    foreach ($menu_by_category[$selected_category] as $menu) {
-                        echo '
-                        <a href="detail_order.php?id_menu='.$menu['id_menu'].'" class="menu-item">
-                            <img src="../assets/allmenu/'.$menu['gambar_menu'].'" alt="'.$menu['nama_menu'].'">
-                            <h3 class="font-semibold">'.$menu['nama_menu'].'</h3>
-                            <p class="text-gray-600">'.$menu['keterangan'].'</p>
-                            <div class="price text-lg font-bold">Rp '.number_format($menu['harga'], 0, ',', '.').'</div>
-                        </a>';
-                    }
-                } else {
-                    echo '<p class="text-center text-gray-500">Menu tidak ditemukan untuk kategori ini.</p>';
+        if ($selected_category === 'All') {
+            foreach ($menu_by_category as $category => $menus) {
+                foreach ($menus as $menu) {
+                    echo '
+                    <a href="detail_order.php?id_menu='.$menu['id_menu'].'" class="menu-item">
+                        <img src="../assets/allmenu/'.$menu['gambar_menu'].'" alt="'.$menu['nama_menu'].'">
+                        <h3 class="font-semibold text-white mb-1">'.$menu['nama_menu'].'</h3>
+                        <p class="text-gray-400 text-sm mb-2">'.$menu['keterangan'].'</p>
+                        <div class="text-purple-400 font-bold">Rp '.number_format($menu['harga'], 0, ',', '.').'</div>
+                    </a>';
                 }
             }
-            ?>
+        } else {
+            if (isset($menu_by_category[$selected_category])) {
+                foreach ($menu_by_category[$selected_category] as $menu) {
+                    echo '
+                    <a href="detail_order.php?id_menu='.$menu['id_menu'].'" class="menu-item">
+                        <img src="../assets/allmenu/'.$menu['gambar_menu'].'" alt="'.$menu['nama_menu'].'">
+                        <h3 class="font-semibold text-white mb-1">'.$menu['nama_menu'].'</h3>
+                        <p class="text-gray-400 text-sm mb-2">'.$menu['keterangan'].'</p>
+                        <div class="text-purple-400 font-bold">Rp '.number_format($menu['harga'], 0, ',', '.').'</div>
+                    </a>';
+                }
+            } else {
+                echo '<div class="empty-message">
+                    <i class="bi bi-inbox text-4xl mb-2 block"></i>
+                    <p>Tidak ada menu dalam kategori ini.</p>
+                </div>';
+            }
+        }
+        ?>
+    </div>
+
+    <nav class="fixed bottom-0 left-0 right-0 bg-gray-800 p-4">
+        <div class="max-w-screen-xl mx-auto flex justify-around">
+            <a href="home.php" class="text-gray-400 flex flex-col items-center">
+                <i class="bi bi-house"></i>
+                <span class="text-sm">Home</span>
+            </a>
+            <a href="scan.php" class="text-gray-400 flex flex-col items-center">
+                <i class="bi bi-qr-code"></i>
+                <span class="text-sm">Scan</span>
+            </a>
+            <a href="keranjang.php" class="text-white flex flex-col items-center">
+                <i class="bi bi-cart"></i>
+                <span class="text-sm">Keranjang</span>
+            </a>
+            <a href="profile.php" class="text-gray-400 flex flex-col items-center">
+                <i class="bi bi-person"></i>
+                <span class="text-sm">Profile</span>
+            </a>
         </div>
-    </div>
+    </nav>
 
-    <!-- Bottom Navigation -->
-    <div class="bottom-nav">
-        <a href="home.php" class="nav-item active">
-            <i class="bi bi-house nav-icon"></i>
-            <span>Home</span>
-        </a>
-        <a href="scan.php" class="nav-item">
-            <i class="bi bi-qr-code nav-icon"></i>
-            <span>Scan</span>
-        </a>
-        <a href="keranjang.php" class="nav-item">
-            <i class="bi bi-bag nav-icon"></i>
-            <span>Orders</span>
-        </a>
-        <a href="profile.php" class="nav-item">
-            <i class="bi bi-person nav-icon"></i>
-            <span>Profile</span>
-        </a>
-    </div>
-
-</div>
 </body>
 </html>

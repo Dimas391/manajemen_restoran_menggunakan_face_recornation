@@ -46,7 +46,7 @@ $username = isset($_GET['username']) ? htmlspecialchars($_GET['username']) : 'Gu
 
         .main-image {
             border-radius: 50%;
-            box-shadow: 0 0 0px rgba(147, 51, 234, 0.3);
+            box-shadow: 0 0 100px rgba(147, 51, 234, 0.3);
         }
     </style>
 </head>

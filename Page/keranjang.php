@@ -48,6 +48,9 @@ if ($result && $result->num_rows > 0) {
     <title>Keranjang - Restoran Siantar Top</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <script type="text/javascript"
+      src="https://app.sandbox.midtrans.com/snap/snap.js"
+      data-client-key="SB-Mid-client-hlSrcA-fJy90gGT4"></script>
     <style>
         body {
             background-color: #1a1a1a;
@@ -230,10 +233,9 @@ if ($result && $result->num_rows > 0) {
                 </span>
             </div>
 
-            <button onclick="window.location.href='pembayaran.php'" 
-                class="action-button w-full h-70 py-4 text-white font-semibold text-lg">
-                Lanjutkan ke Pembayaran
-            </button>
+        <button id="checkout-button" class="action-button w-full h-70 py-4 text-white font-semibold text-lg">
+         Lanjutkan ke Pembayaran
+        </button>
         </div>
     </div>
 
@@ -245,7 +247,7 @@ if ($result && $result->num_rows > 0) {
                 <span class="text-sm">Home</span>
             </a>
             <a href="scan.php" class="text-gray-400 flex flex-col items-center">
-                <i class="bi bi-qr-code"></i>
+                <i class="bi bi-qr-code"></i> 
                 <span class="text-sm">Scan</span>
             </a>
             <a href="keranjang.php" class="text-white flex flex-col items-center">
@@ -258,6 +260,62 @@ if ($result && $result->num_rows > 0) {
             </a>
         </div>
     </nav>
+
+   <script>
+document.getElementById('checkout-button').addEventListener('click', async function() {
+    try {
+        // First, get the Midtrans Snap token (from ewallet.php)
+        const snapResponse = await fetch('ewallet.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const snapResult = await snapResponse.json();
+
+        if (snapResult.status === 'success') {
+            // Call Midtrans Snap payment
+            snap.pay(snapResult.snapToken, {
+                onSuccess: async function(result) {
+                    console.log('Payment Success:', result);
+                    
+                    // Process payment and move cart to history
+                    const processResponse = await fetch('process_payment.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    const processResult = await processResponse.json();
+
+                    if (processResult.status === 'success') {
+                        // Redirect to order confirmation or show success message
+                        alert('Pembayaran Berhasil! Nomor Pesanan: ' + processResult.order_number);
+                        window.location.href = 'riwayat_pembelian.php'; // Optional: redirect to order history
+                    } else {
+                        alert('Gagal memproses pesanan: ' + processResult.message);
+                    }
+                },
+                onPending: function(result) {
+                    console.log('Payment Pending:', result);
+                    alert('Pembayaran sedang diproses');
+                },
+                onError: function(result) {
+                    console.log('Payment Error:', result);
+                    alert('Pembayaran gagal');
+                }
+            });
+        } else {
+            alert('Gagal mendapatkan Snap Token: ' + snapResult.message);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Terjadi kesalahan saat memproses pembayaran');
+    }
+});
+</script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {

@@ -1,0 +1,1819 @@
+[2024-11-21 13:06:27] Transaction Parameters
+Additional Info: Array
+(
+    [transaction_details] => Array
+        (
+            [order_id] => ORD-673f224369b66-1732190787
+            [gross_amount] => 3829000
+        )
+
+    [item_details] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 11
+                    [price] => 19000
+                    [quantity] => 13
+                    [name] => Orange Cherry
+                )
+
+            [1] => Array
+                (
+                    [id] => 18
+                    [price] => 23000
+                    [quantity] => 1
+                    [name] => Watermelon and Orange
+                )
+
+            [2] => Array
+                (
+                    [id] => 18
+                    [price] => 23000
+                    [quantity] => 2
+                    [name] => Watermelon and Orange
+                )
+
+            [3] => Array
+                (
+                    [id] => 7
+                    [price] => 30000
+                    [quantity] => 7
+                    [name] => Beef Burger
+                )
+
+            [4] => Array
+                (
+                    [id] => 15
+                    [price] => 30000
+                    [quantity] => 10
+                    [name] => Watermelon and Orange
+                )
+
+            [5] => Array
+                (
+                    [id] => 31
+                    [price] => 12000
+                    [quantity] => 1
+                    [name] => Choco Chip Bites
+                )
+
+            [6] => Array
+                (
+                    [id] => 31
+                    [price] => 12000
+                    [quantity] => 1
+                    [name] => Choco Chip Bites
+                )
+
+            [7] => Array
+                (
+                    [id] => 10
+                    [price] => 23000
+                    [quantity] => 1
+                    [name] => BBQ Beef
+                )
+
+            [8] => Array
+                (
+                    [id] => 10
+                    [price] => 23000
+                    [quantity] => 1
+                    [name] => BBQ Beef
+                )
+
+            [9] => Array
+                (
+                    [id] => 8
+                    [price] => 24000
+                    [quantity] => 9
+                    [name] => Beef Steak
+                )
+
+            [10] => Array
+                (
+                    [id] => 13
+                    [price] => 15000
+                    [quantity] => 15
+                    [name] => Milk Tea
+                )
+
+            [11] => Array
+                (
+                    [id] => 1
+                    [price] => 25000
+                    [quantity] => 1
+                    [name] => Chicken Wings
+                )
+
+            [12] => Array
+                (
+                    [id] => 1
+                    [price] => 25000
+                    [quantity] => 1
+                    [name] => Chicken Wings
+                )
+
+            [13] => Array
+                (
+                    [id] => 7
+                    [price] => 30000
+                    [quantity] => 7
+                    [name] => Beef Burger
+                )
+
+            [14] => Array
+                (
+                    [id] => 7
+                    [price] => 30000
+                    [quantity] => 7
+                    [name] => Beef Burger
+                )
+
+            [15] => Array
+                (
+                    [id] => 13
+                    [price] => 15000
+                    [quantity] => 15
+                    [name] => Milk Tea
+                )
+
+            [16] => Array
+                (
+                    [id] => 15
+                    [price] => 30000
+                    [quantity] => 10
+                    [name] => Watermelon and Orange
+                )
+
+            [17] => Array
+                (
+                    [id] => 15
+                    [price] => 30000
+                    [quantity] => 1
+                    [name] => Watermelon and Orange
+                )
+
+            [18] => Array
+                (
+                    [id] => 15
+                    [price] => 30000
+                    [quantity] => 1
+                    [name] => Watermelon and Orange
+                )
+
+            [19] => Array
+                (
+                    [id] => 15
+                    [price] => 30000
+                    [quantity] => 1
+                    [name] => Watermelon and Orange
+                )
+
+            [20] => Array
+                (
+                    [id] => 15
+                    [price] => 30000
+                    [quantity] => 3
+                    [name] => Watermelon and Orange
+                )
+
+            [21] => Array
+                (
+                    [id] => 15
+                    [price] => 30000
+                    [quantity] => 1
+                    [name] => Watermelon and Orange
+                )
+
+            [22] => Array
+                (
+                    [id] => 15
+                    [price] => 30000
+                    [quantity] => 1
+                    [name] => Watermelon and Orange
+                )
+
+            [23] => Array
+                (
+                    [id] => 15
+                    [price] => 30000
+                    [quantity] => 1
+                    [name] => Watermelon and Orange
+                )
+
+            [24] => Array
+                (
+                    [id] => 15
+                    [price] => 30000
+                    [quantity] => 1
+                    [name] => Watermelon and Orange
+                )
+
+            [25] => Array
+                (
+                    [id] => 15
+                    [price] => 30000
+                    [quantity] => 1
+                    [name] => Watermelon and Orange
+                )
+
+            [26] => Array
+                (
+                    [id] => 15
+                    [price] => 30000
+                    [quantity] => 26
+                    [name] => Watermelon and Orange
+                )
+
+            [27] => Array
+                (
+                    [id] => 11
+                    [price] => 19000
+                    [quantity] => 1
+                    [name] => Orange Cherry
+                )
+
+            [28] => Array
+                (
+                    [id] => 11
+                    [price] => 19000
+                    [quantity] => 1
+                    [name] => Orange Cherry
+                )
+
+            [29] => Array
+                (
+                    [id] => 5
+                    [price] => 16000
+                    [quantity] => 5
+                    [name] => Beef Tongseng
+                )
+
+            [30] => Array
+                (
+                    [id] => 1
+                    [price] => 25000
+                    [quantity] => 1
+                    [name] => Chicken Wings
+                )
+
+            [31] => Array
+                (
+                    [id] => 1
+                    [price] => 25000
+                    [quantity] => 1
+                    [name] => Chicken Wings
+                )
+
+            [32] => Array
+                (
+                    [id] => 1
+                    [price] => 25000
+                    [quantity] => 1
+                    [name] => Chicken Wings
+                )
+
+            [33] => Array
+                (
+                    [id] => 1
+                    [price] => 25000
+                    [quantity] => 1
+                    [name] => Chicken Wings
+                )
+
+            [34] => Array
+                (
+                    [id] => 2
+                    [price] => 15000
+                    [quantity] => 5
+                    [name] => Fried Chicken
+                )
+
+            [35] => Array
+                (
+                    [id] => 30
+                    [price] => 23000
+                    [quantity] => 1
+                    [name] => Strawberry Delight Pudding wit
+                )
+
+            [36] => Array
+                (
+                    [id] => 6
+                    [price] => 23000
+                    [quantity] => 1
+                    [name] => Wagyu A5
+                )
+
+            [37] => Array
+                (
+                    [id] => 10
+                    [price] => 23000
+                    [quantity] => 1
+                    [name] => BBQ Beef
+                )
+
+            [38] => Array
+                (
+                    [id] => 1
+                    [price] => 25000
+                    [quantity] => 1
+                    [name] => Chicken Wings
+                )
+
+        )
+
+    [customer_details] => Array
+        (
+            [first_name] => dimas
+            [email] => dimas@gmail.com
+            [phone] => 0
+        )
+
+    [enabled_payments] => Array
+        (
+            [0] => credit_card
+            [1] => mandiri_clickpay
+            [2] => cimb_clicks
+            [3] => bca_klikbank
+            [4] => bni_va
+            [5] => mandiri_va
+            [6] => permata_va
+            [7] => bca_va
+            [8] => bri_va
+            [9] => other_va
+            [10] => gopay
+            [11] => indomaret
+            [12] => alfamart
+            [13] => dana
+            [14] => ovo
+        )
+
+)
+
+[2024-11-21 13:06:29] Transaction Parameters
+Additional Info: Array
+(
+    [transaction_details] => Array
+        (
+            [order_id] => ORD-673f2245e497a-1732190789
+            [gross_amount] => 3829000
+        )
+
+    [item_details] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 11
+                    [price] => 19000
+                    [quantity] => 13
+                    [name] => Orange Cherry
+                )
+
+            [1] => Array
+                (
+                    [id] => 18
+                    [price] => 23000
+                    [quantity] => 1
+                    [name] => Watermelon and Orange
+                )
+
+            [2] => Array
+                (
+                    [id] => 18
+                    [price] => 23000
+                    [quantity] => 2
+                    [name] => Watermelon and Orange
+                )
+
+            [3] => Array
+                (
+                    [id] => 7
+                    [price] => 30000
+                    [quantity] => 7
+                    [name] => Beef Burger
+                )
+
+            [4] => Array
+                (
+                    [id] => 15
+                    [price] => 30000
+                    [quantity] => 10
+                    [name] => Watermelon and Orange
+                )
+
+            [5] => Array
+                (
+                    [id] => 31
+                    [price] => 12000
+                    [quantity] => 1
+                    [name] => Choco Chip Bites
+                )
+
+            [6] => Array
+                (
+                    [id] => 31
+                    [price] => 12000
+                    [quantity] => 1
+                    [name] => Choco Chip Bites
+                )
+
+            [7] => Array
+                (
+                    [id] => 10
+                    [price] => 23000
+                    [quantity] => 1
+                    [name] => BBQ Beef
+                )
+
+            [8] => Array
+                (
+                    [id] => 10
+                    [price] => 23000
+                    [quantity] => 1
+                    [name] => BBQ Beef
+                )
+
+            [9] => Array
+                (
+                    [id] => 8
+                    [price] => 24000
+                    [quantity] => 9
+                    [name] => Beef Steak
+                )
+
+            [10] => Array
+                (
+                    [id] => 13
+                    [price] => 15000
+                    [quantity] => 15
+                    [name] => Milk Tea
+                )
+
+            [11] => Array
+                (
+                    [id] => 1
+                    [price] => 25000
+                    [quantity] => 1
+                    [name] => Chicken Wings
+                )
+
+            [12] => Array
+                (
+                    [id] => 1
+                    [price] => 25000
+                    [quantity] => 1
+                    [name] => Chicken Wings
+                )
+
+            [13] => Array
+                (
+                    [id] => 7
+                    [price] => 30000
+                    [quantity] => 7
+                    [name] => Beef Burger
+                )
+
+            [14] => Array
+                (
+                    [id] => 7
+                    [price] => 30000
+                    [quantity] => 7
+                    [name] => Beef Burger
+                )
+
+            [15] => Array
+                (
+                    [id] => 13
+                    [price] => 15000
+                    [quantity] => 15
+                    [name] => Milk Tea
+                )
+
+            [16] => Array
+                (
+                    [id] => 15
+                    [price] => 30000
+                    [quantity] => 10
+                    [name] => Watermelon and Orange
+                )
+
+            [17] => Array
+                (
+                    [id] => 15
+                    [price] => 30000
+                    [quantity] => 1
+                    [name] => Watermelon and Orange
+                )
+
+            [18] => Array
+                (
+                    [id] => 15
+                    [price] => 30000
+                    [quantity] => 1
+                    [name] => Watermelon and Orange
+                )
+
+            [19] => Array
+                (
+                    [id] => 15
+                    [price] => 30000
+                    [quantity] => 1
+                    [name] => Watermelon and Orange
+                )
+
+            [20] => Array
+                (
+                    [id] => 15
+                    [price] => 30000
+                    [quantity] => 3
+                    [name] => Watermelon and Orange
+                )
+
+            [21] => Array
+                (
+                    [id] => 15
+                    [price] => 30000
+                    [quantity] => 1
+                    [name] => Watermelon and Orange
+                )
+
+            [22] => Array
+                (
+                    [id] => 15
+                    [price] => 30000
+                    [quantity] => 1
+                    [name] => Watermelon and Orange
+                )
+
+            [23] => Array
+                (
+                    [id] => 15
+                    [price] => 30000
+                    [quantity] => 1
+                    [name] => Watermelon and Orange
+                )
+
+            [24] => Array
+                (
+                    [id] => 15
+                    [price] => 30000
+                    [quantity] => 1
+                    [name] => Watermelon and Orange
+                )
+
+            [25] => Array
+                (
+                    [id] => 15
+                    [price] => 30000
+                    [quantity] => 1
+                    [name] => Watermelon and Orange
+                )
+
+            [26] => Array
+                (
+                    [id] => 15
+                    [price] => 30000
+                    [quantity] => 26
+                    [name] => Watermelon and Orange
+                )
+
+            [27] => Array
+                (
+                    [id] => 11
+                    [price] => 19000
+                    [quantity] => 1
+                    [name] => Orange Cherry
+                )
+
+            [28] => Array
+                (
+                    [id] => 11
+                    [price] => 19000
+                    [quantity] => 1
+                    [name] => Orange Cherry
+                )
+
+            [29] => Array
+                (
+                    [id] => 5
+                    [price] => 16000
+                    [quantity] => 5
+                    [name] => Beef Tongseng
+                )
+
+            [30] => Array
+                (
+                    [id] => 1
+                    [price] => 25000
+                    [quantity] => 1
+                    [name] => Chicken Wings
+                )
+
+            [31] => Array
+                (
+                    [id] => 1
+                    [price] => 25000
+                    [quantity] => 1
+                    [name] => Chicken Wings
+                )
+
+            [32] => Array
+                (
+                    [id] => 1
+                    [price] => 25000
+                    [quantity] => 1
+                    [name] => Chicken Wings
+                )
+
+            [33] => Array
+                (
+                    [id] => 1
+                    [price] => 25000
+                    [quantity] => 1
+                    [name] => Chicken Wings
+                )
+
+            [34] => Array
+                (
+                    [id] => 2
+                    [price] => 15000
+                    [quantity] => 5
+                    [name] => Fried Chicken
+                )
+
+            [35] => Array
+                (
+                    [id] => 30
+                    [price] => 23000
+                    [quantity] => 1
+                    [name] => Strawberry Delight Pudding wit
+                )
+
+            [36] => Array
+                (
+                    [id] => 6
+                    [price] => 23000
+                    [quantity] => 1
+                    [name] => Wagyu A5
+                )
+
+            [37] => Array
+                (
+                    [id] => 10
+                    [price] => 23000
+                    [quantity] => 1
+                    [name] => BBQ Beef
+                )
+
+            [38] => Array
+                (
+                    [id] => 1
+                    [price] => 25000
+                    [quantity] => 1
+                    [name] => Chicken Wings
+                )
+
+        )
+
+    [customer_details] => Array
+        (
+            [first_name] => dimas
+            [email] => dimas@gmail.com
+            [phone] => 0
+        )
+
+    [enabled_payments] => Array
+        (
+            [0] => credit_card
+            [1] => mandiri_clickpay
+            [2] => cimb_clicks
+            [3] => bca_klikbank
+            [4] => bni_va
+            [5] => mandiri_va
+            [6] => permata_va
+            [7] => bca_va
+            [8] => bri_va
+            [9] => other_va
+            [10] => gopay
+            [11] => indomaret
+            [12] => alfamart
+            [13] => dana
+            [14] => ovo
+        )
+
+)
+
+[2024-11-21 13:20:42] Transaction Parameters
+Additional Info: Array
+(
+    [transaction_details] => Array
+        (
+            [order_id] => ORD-673f259ada1f0-1732191642
+            [gross_amount] => 3829000
+        )
+
+    [item_details] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 11
+                    [price] => 19000
+                    [quantity] => 13
+                    [name] => Orange Cherry
+                )
+
+            [1] => Array
+                (
+                    [id] => 18
+                    [price] => 23000
+                    [quantity] => 1
+                    [name] => Watermelon and Orange
+                )
+
+            [2] => Array
+                (
+                    [id] => 18
+                    [price] => 23000
+                    [quantity] => 2
+                    [name] => Watermelon and Orange
+                )
+
+            [3] => Array
+                (
+                    [id] => 7
+                    [price] => 30000
+                    [quantity] => 7
+                    [name] => Beef Burger
+                )
+
+            [4] => Array
+                (
+                    [id] => 15
+                    [price] => 30000
+                    [quantity] => 10
+                    [name] => Watermelon and Orange
+                )
+
+            [5] => Array
+                (
+                    [id] => 31
+                    [price] => 12000
+                    [quantity] => 1
+                    [name] => Choco Chip Bites
+                )
+
+            [6] => Array
+                (
+                    [id] => 31
+                    [price] => 12000
+                    [quantity] => 1
+                    [name] => Choco Chip Bites
+                )
+
+            [7] => Array
+                (
+                    [id] => 10
+                    [price] => 23000
+                    [quantity] => 1
+                    [name] => BBQ Beef
+                )
+
+            [8] => Array
+                (
+                    [id] => 10
+                    [price] => 23000
+                    [quantity] => 1
+                    [name] => BBQ Beef
+                )
+
+            [9] => Array
+                (
+                    [id] => 8
+                    [price] => 24000
+                    [quantity] => 9
+                    [name] => Beef Steak
+                )
+
+            [10] => Array
+                (
+                    [id] => 13
+                    [price] => 15000
+                    [quantity] => 15
+                    [name] => Milk Tea
+                )
+
+            [11] => Array
+                (
+                    [id] => 1
+                    [price] => 25000
+                    [quantity] => 1
+                    [name] => Chicken Wings
+                )
+
+            [12] => Array
+                (
+                    [id] => 1
+                    [price] => 25000
+                    [quantity] => 1
+                    [name] => Chicken Wings
+                )
+
+            [13] => Array
+                (
+                    [id] => 7
+                    [price] => 30000
+                    [quantity] => 7
+                    [name] => Beef Burger
+                )
+
+            [14] => Array
+                (
+                    [id] => 7
+                    [price] => 30000
+                    [quantity] => 7
+                    [name] => Beef Burger
+                )
+
+            [15] => Array
+                (
+                    [id] => 13
+                    [price] => 15000
+                    [quantity] => 15
+                    [name] => Milk Tea
+                )
+
+            [16] => Array
+                (
+                    [id] => 15
+                    [price] => 30000
+                    [quantity] => 10
+                    [name] => Watermelon and Orange
+                )
+
+            [17] => Array
+                (
+                    [id] => 15
+                    [price] => 30000
+                    [quantity] => 1
+                    [name] => Watermelon and Orange
+                )
+
+            [18] => Array
+                (
+                    [id] => 15
+                    [price] => 30000
+                    [quantity] => 1
+                    [name] => Watermelon and Orange
+                )
+
+            [19] => Array
+                (
+                    [id] => 15
+                    [price] => 30000
+                    [quantity] => 1
+                    [name] => Watermelon and Orange
+                )
+
+            [20] => Array
+                (
+                    [id] => 15
+                    [price] => 30000
+                    [quantity] => 3
+                    [name] => Watermelon and Orange
+                )
+
+            [21] => Array
+                (
+                    [id] => 15
+                    [price] => 30000
+                    [quantity] => 1
+                    [name] => Watermelon and Orange
+                )
+
+            [22] => Array
+                (
+                    [id] => 15
+                    [price] => 30000
+                    [quantity] => 1
+                    [name] => Watermelon and Orange
+                )
+
+            [23] => Array
+                (
+                    [id] => 15
+                    [price] => 30000
+                    [quantity] => 1
+                    [name] => Watermelon and Orange
+                )
+
+            [24] => Array
+                (
+                    [id] => 15
+                    [price] => 30000
+                    [quantity] => 1
+                    [name] => Watermelon and Orange
+                )
+
+            [25] => Array
+                (
+                    [id] => 15
+                    [price] => 30000
+                    [quantity] => 1
+                    [name] => Watermelon and Orange
+                )
+
+            [26] => Array
+                (
+                    [id] => 15
+                    [price] => 30000
+                    [quantity] => 26
+                    [name] => Watermelon and Orange
+                )
+
+            [27] => Array
+                (
+                    [id] => 11
+                    [price] => 19000
+                    [quantity] => 1
+                    [name] => Orange Cherry
+                )
+
+            [28] => Array
+                (
+                    [id] => 11
+                    [price] => 19000
+                    [quantity] => 1
+                    [name] => Orange Cherry
+                )
+
+            [29] => Array
+                (
+                    [id] => 5
+                    [price] => 16000
+                    [quantity] => 5
+                    [name] => Beef Tongseng
+                )
+
+            [30] => Array
+                (
+                    [id] => 1
+                    [price] => 25000
+                    [quantity] => 1
+                    [name] => Chicken Wings
+                )
+
+            [31] => Array
+                (
+                    [id] => 1
+                    [price] => 25000
+                    [quantity] => 1
+                    [name] => Chicken Wings
+                )
+
+            [32] => Array
+                (
+                    [id] => 1
+                    [price] => 25000
+                    [quantity] => 1
+                    [name] => Chicken Wings
+                )
+
+            [33] => Array
+                (
+                    [id] => 1
+                    [price] => 25000
+                    [quantity] => 1
+                    [name] => Chicken Wings
+                )
+
+            [34] => Array
+                (
+                    [id] => 2
+                    [price] => 15000
+                    [quantity] => 5
+                    [name] => Fried Chicken
+                )
+
+            [35] => Array
+                (
+                    [id] => 30
+                    [price] => 23000
+                    [quantity] => 1
+                    [name] => Strawberry Delight Pudding wit
+                )
+
+            [36] => Array
+                (
+                    [id] => 6
+                    [price] => 23000
+                    [quantity] => 1
+                    [name] => Wagyu A5
+                )
+
+            [37] => Array
+                (
+                    [id] => 10
+                    [price] => 23000
+                    [quantity] => 1
+                    [name] => BBQ Beef
+                )
+
+            [38] => Array
+                (
+                    [id] => 1
+                    [price] => 25000
+                    [quantity] => 1
+                    [name] => Chicken Wings
+                )
+
+        )
+
+    [customer_details] => Array
+        (
+            [first_name] => dimas
+            [email] => dimas@gmail.com
+            [phone] => 0
+        )
+
+    [enabled_payments] => Array
+        (
+            [0] => credit_card
+            [1] => mandiri_clickpay
+            [2] => cimb_clicks
+            [3] => bca_klikbank
+            [4] => bni_va
+            [5] => mandiri_va
+            [6] => permata_va
+            [7] => bca_va
+            [8] => bri_va
+            [9] => other_va
+            [10] => gopay
+            [11] => indomaret
+            [12] => alfamart
+            [13] => dana
+            [14] => ovo
+        )
+
+)
+
+[2024-11-21 13:27:36] Transaction Parameters
+Additional Info: Array
+(
+    [transaction_details] => Array
+        (
+            [order_id] => ORD-673f2738cc7ee-1732192056
+            [gross_amount] => 3829000
+        )
+
+    [item_details] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 11
+                    [price] => 19000
+                    [quantity] => 13
+                    [name] => Orange Cherry
+                )
+
+            [1] => Array
+                (
+                    [id] => 18
+                    [price] => 23000
+                    [quantity] => 1
+                    [name] => Watermelon and Orange
+                )
+
+            [2] => Array
+                (
+                    [id] => 18
+                    [price] => 23000
+                    [quantity] => 2
+                    [name] => Watermelon and Orange
+                )
+
+            [3] => Array
+                (
+                    [id] => 7
+                    [price] => 30000
+                    [quantity] => 7
+                    [name] => Beef Burger
+                )
+
+            [4] => Array
+                (
+                    [id] => 15
+                    [price] => 30000
+                    [quantity] => 10
+                    [name] => Watermelon and Orange
+                )
+
+            [5] => Array
+                (
+                    [id] => 31
+                    [price] => 12000
+                    [quantity] => 1
+                    [name] => Choco Chip Bites
+                )
+
+            [6] => Array
+                (
+                    [id] => 31
+                    [price] => 12000
+                    [quantity] => 1
+                    [name] => Choco Chip Bites
+                )
+
+            [7] => Array
+                (
+                    [id] => 10
+                    [price] => 23000
+                    [quantity] => 1
+                    [name] => BBQ Beef
+                )
+
+            [8] => Array
+                (
+                    [id] => 10
+                    [price] => 23000
+                    [quantity] => 1
+                    [name] => BBQ Beef
+                )
+
+            [9] => Array
+                (
+                    [id] => 8
+                    [price] => 24000
+                    [quantity] => 9
+                    [name] => Beef Steak
+                )
+
+            [10] => Array
+                (
+                    [id] => 13
+                    [price] => 15000
+                    [quantity] => 15
+                    [name] => Milk Tea
+                )
+
+            [11] => Array
+                (
+                    [id] => 1
+                    [price] => 25000
+                    [quantity] => 1
+                    [name] => Chicken Wings
+                )
+
+            [12] => Array
+                (
+                    [id] => 1
+                    [price] => 25000
+                    [quantity] => 1
+                    [name] => Chicken Wings
+                )
+
+            [13] => Array
+                (
+                    [id] => 7
+                    [price] => 30000
+                    [quantity] => 7
+                    [name] => Beef Burger
+                )
+
+            [14] => Array
+                (
+                    [id] => 7
+                    [price] => 30000
+                    [quantity] => 7
+                    [name] => Beef Burger
+                )
+
+            [15] => Array
+                (
+                    [id] => 13
+                    [price] => 15000
+                    [quantity] => 15
+                    [name] => Milk Tea
+                )
+
+            [16] => Array
+                (
+                    [id] => 15
+                    [price] => 30000
+                    [quantity] => 10
+                    [name] => Watermelon and Orange
+                )
+
+            [17] => Array
+                (
+                    [id] => 15
+                    [price] => 30000
+                    [quantity] => 1
+                    [name] => Watermelon and Orange
+                )
+
+            [18] => Array
+                (
+                    [id] => 15
+                    [price] => 30000
+                    [quantity] => 1
+                    [name] => Watermelon and Orange
+                )
+
+            [19] => Array
+                (
+                    [id] => 15
+                    [price] => 30000
+                    [quantity] => 1
+                    [name] => Watermelon and Orange
+                )
+
+            [20] => Array
+                (
+                    [id] => 15
+                    [price] => 30000
+                    [quantity] => 3
+                    [name] => Watermelon and Orange
+                )
+
+            [21] => Array
+                (
+                    [id] => 15
+                    [price] => 30000
+                    [quantity] => 1
+                    [name] => Watermelon and Orange
+                )
+
+            [22] => Array
+                (
+                    [id] => 15
+                    [price] => 30000
+                    [quantity] => 1
+                    [name] => Watermelon and Orange
+                )
+
+            [23] => Array
+                (
+                    [id] => 15
+                    [price] => 30000
+                    [quantity] => 1
+                    [name] => Watermelon and Orange
+                )
+
+            [24] => Array
+                (
+                    [id] => 15
+                    [price] => 30000
+                    [quantity] => 1
+                    [name] => Watermelon and Orange
+                )
+
+            [25] => Array
+                (
+                    [id] => 15
+                    [price] => 30000
+                    [quantity] => 1
+                    [name] => Watermelon and Orange
+                )
+
+            [26] => Array
+                (
+                    [id] => 15
+                    [price] => 30000
+                    [quantity] => 26
+                    [name] => Watermelon and Orange
+                )
+
+            [27] => Array
+                (
+                    [id] => 11
+                    [price] => 19000
+                    [quantity] => 1
+                    [name] => Orange Cherry
+                )
+
+            [28] => Array
+                (
+                    [id] => 11
+                    [price] => 19000
+                    [quantity] => 1
+                    [name] => Orange Cherry
+                )
+
+            [29] => Array
+                (
+                    [id] => 5
+                    [price] => 16000
+                    [quantity] => 5
+                    [name] => Beef Tongseng
+                )
+
+            [30] => Array
+                (
+                    [id] => 1
+                    [price] => 25000
+                    [quantity] => 1
+                    [name] => Chicken Wings
+                )
+
+            [31] => Array
+                (
+                    [id] => 1
+                    [price] => 25000
+                    [quantity] => 1
+                    [name] => Chicken Wings
+                )
+
+            [32] => Array
+                (
+                    [id] => 1
+                    [price] => 25000
+                    [quantity] => 1
+                    [name] => Chicken Wings
+                )
+
+            [33] => Array
+                (
+                    [id] => 1
+                    [price] => 25000
+                    [quantity] => 1
+                    [name] => Chicken Wings
+                )
+
+            [34] => Array
+                (
+                    [id] => 2
+                    [price] => 15000
+                    [quantity] => 5
+                    [name] => Fried Chicken
+                )
+
+            [35] => Array
+                (
+                    [id] => 30
+                    [price] => 23000
+                    [quantity] => 1
+                    [name] => Strawberry Delight Pudding wit
+                )
+
+            [36] => Array
+                (
+                    [id] => 6
+                    [price] => 23000
+                    [quantity] => 1
+                    [name] => Wagyu A5
+                )
+
+            [37] => Array
+                (
+                    [id] => 10
+                    [price] => 23000
+                    [quantity] => 1
+                    [name] => BBQ Beef
+                )
+
+            [38] => Array
+                (
+                    [id] => 1
+                    [price] => 25000
+                    [quantity] => 1
+                    [name] => Chicken Wings
+                )
+
+        )
+
+    [customer_details] => Array
+        (
+            [first_name] => dimas
+            [email] => dimas@gmail.com
+            [phone] => 0
+        )
+
+    [enabled_payments] => Array
+        (
+            [0] => credit_card
+            [1] => mandiri_clickpay
+            [2] => cimb_clicks
+            [3] => bca_klikbank
+            [4] => bni_va
+            [5] => mandiri_va
+            [6] => permata_va
+            [7] => bca_va
+            [8] => bri_va
+            [9] => other_va
+            [10] => gopay
+            [11] => indomaret
+            [12] => alfamart
+            [13] => dana
+            [14] => ovo
+        )
+
+)
+
+[2024-11-21 13:36:48] Transaction Parameters
+Additional Info: Array
+(
+    [transaction_details] => Array
+        (
+            [order_id] => ORD-673f2960a5e3a-1732192608
+            [gross_amount] => 23000
+        )
+
+    [item_details] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 3
+                    [price] => 23000
+                    [quantity] => 1
+                    [name] => Chicken Smackdown
+                )
+
+        )
+
+    [customer_details] => Array
+        (
+            [first_name] => dimas
+            [email] => dimas@gmail.com
+            [phone] => 0
+        )
+
+    [enabled_payments] => Array
+        (
+            [0] => credit_card
+            [1] => mandiri_clickpay
+            [2] => cimb_clicks
+            [3] => bca_klikbank
+            [4] => bni_va
+            [5] => mandiri_va
+            [6] => permata_va
+            [7] => bca_va
+            [8] => bri_va
+            [9] => other_va
+            [10] => gopay
+            [11] => indomaret
+            [12] => alfamart
+            [13] => dana
+            [14] => ovo
+        )
+
+)
+
+[2024-11-21 15:21:34] Transaction Parameters
+Additional Info: Array
+(
+    [transaction_details] => Array
+        (
+            [order_id] => ORD-673f41ee465ae-1732198894
+            [gross_amount] => 46000
+        )
+
+    [item_details] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 3
+                    [price] => 23000
+                    [quantity] => 1
+                    [name] => Chicken Smackdown
+                )
+
+            [1] => Array
+                (
+                    [id] => 10
+                    [price] => 23000
+                    [quantity] => 1
+                    [name] => BBQ Beef
+                )
+
+        )
+
+    [customer_details] => Array
+        (
+            [first_name] => dimas
+            [email] => dimas@gmail.com
+            [phone] => 0
+        )
+
+    [enabled_payments] => Array
+        (
+            [0] => credit_card
+            [1] => mandiri_clickpay
+            [2] => cimb_clicks
+            [3] => bca_klikbank
+            [4] => bni_va
+            [5] => mandiri_va
+            [6] => permata_va
+            [7] => bca_va
+            [8] => bri_va
+            [9] => other_va
+            [10] => gopay
+            [11] => indomaret
+            [12] => alfamart
+            [13] => dana
+            [14] => ovo
+        )
+
+)
+
+[2024-11-21 15:24:48] Transaction Parameters
+Additional Info: Array
+(
+    [transaction_details] => Array
+        (
+            [order_id] => ORD-673f42b0be391-1732199088
+            [gross_amount] => 23000
+        )
+
+    [item_details] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 3
+                    [price] => 23000
+                    [quantity] => 1
+                    [name] => Chicken Smackdown
+                )
+
+        )
+
+    [customer_details] => Array
+        (
+            [first_name] => dimas
+            [email] => dimas@gmail.com
+            [phone] => 0
+        )
+
+    [enabled_payments] => Array
+        (
+            [0] => credit_card
+            [1] => mandiri_clickpay
+            [2] => cimb_clicks
+            [3] => bca_klikbank
+            [4] => bni_va
+            [5] => mandiri_va
+            [6] => permata_va
+            [7] => bca_va
+            [8] => bri_va
+            [9] => other_va
+            [10] => gopay
+            [11] => indomaret
+            [12] => alfamart
+            [13] => dana
+            [14] => ovo
+        )
+
+)
+
+[2024-11-21 15:30:13] General Transaction Error
+Additional Info: Array
+(
+    [message] => Keranjang belanja kosong
+    [trace] => #0 {main}
+)
+
+[2024-11-21 15:43:37] Transaction Parameters
+Additional Info: Array
+(
+    [transaction_details] => Array
+        (
+            [order_id] => ORD-673f4719d53db-1732200217
+            [gross_amount] => 34000
+        )
+
+    [item_details] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 16
+                    [price] => 34000
+                    [quantity] => 1
+                    [name] => Strawberry and Cream
+                )
+
+        )
+
+    [customer_details] => Array
+        (
+            [first_name] => dimas
+            [email] => dimas@gmail.com
+            [phone] => 0
+        )
+
+    [enabled_payments] => Array
+        (
+            [0] => credit_card
+            [1] => mandiri_clickpay
+            [2] => cimb_clicks
+            [3] => bca_klikbank
+            [4] => bni_va
+            [5] => mandiri_va
+            [6] => permata_va
+            [7] => bca_va
+            [8] => bri_va
+            [9] => other_va
+            [10] => gopay
+            [11] => indomaret
+            [12] => alfamart
+            [13] => dana
+            [14] => ovo
+        )
+
+)
+
+[2024-11-21 15:47:44] Transaction Parameters
+Additional Info: Array
+(
+    [transaction_details] => Array
+        (
+            [order_id] => ORD-673f481030870-1732200464
+            [gross_amount] => 45000
+        )
+
+    [item_details] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 2
+                    [price] => 15000
+                    [quantity] => 3
+                    [name] => Fried Chicken
+                )
+
+        )
+
+    [customer_details] => Array
+        (
+            [first_name] => dimas
+            [email] => dimas@gmail.com
+            [phone] => 0
+        )
+
+    [enabled_payments] => Array
+        (
+            [0] => credit_card
+            [1] => mandiri_clickpay
+            [2] => cimb_clicks
+            [3] => bca_klikbank
+            [4] => bni_va
+            [5] => mandiri_va
+            [6] => permata_va
+            [7] => bca_va
+            [8] => bri_va
+            [9] => other_va
+            [10] => gopay
+            [11] => indomaret
+            [12] => alfamart
+            [13] => dana
+            [14] => ovo
+        )
+
+)
+
+[2024-11-21 15:57:31] Transaction Parameters
+Additional Info: Array
+(
+    [transaction_details] => Array
+        (
+            [order_id] => ORD-673f4a5be42fc-1732201051
+            [gross_amount] => 24000
+        )
+
+    [item_details] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 32
+                    [price] => 24000
+                    [quantity] => 1
+                    [name] => Macaroni Soufflé
+                )
+
+        )
+
+    [customer_details] => Array
+        (
+            [first_name] => dimas
+            [email] => dimas@gmail.com
+            [phone] => 0
+        )
+
+    [enabled_payments] => Array
+        (
+            [0] => credit_card
+            [1] => mandiri_clickpay
+            [2] => cimb_clicks
+            [3] => bca_klikbank
+            [4] => bni_va
+            [5] => mandiri_va
+            [6] => permata_va
+            [7] => bca_va
+            [8] => bri_va
+            [9] => other_va
+            [10] => gopay
+            [11] => indomaret
+            [12] => alfamart
+            [13] => dana
+            [14] => ovo
+        )
+
+)
+
+[2024-11-21 16:00:55] Transaction Parameters
+Additional Info: Array
+(
+    [transaction_details] => Array
+        (
+            [order_id] => ORD-673f4b278d9fc-1732201255
+            [gross_amount] => 15000
+        )
+
+    [item_details] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 2
+                    [price] => 15000
+                    [quantity] => 1
+                    [name] => Fried Chicken
+                )
+
+        )
+
+    [customer_details] => Array
+        (
+            [first_name] => dimas
+            [email] => dimas@gmail.com
+            [phone] => 0
+        )
+
+    [enabled_payments] => Array
+        (
+            [0] => credit_card
+            [1] => mandiri_clickpay
+            [2] => cimb_clicks
+            [3] => bca_klikbank
+            [4] => bni_va
+            [5] => mandiri_va
+            [6] => permata_va
+            [7] => bca_va
+            [8] => bri_va
+            [9] => other_va
+            [10] => gopay
+            [11] => indomaret
+            [12] => alfamart
+            [13] => dana
+            [14] => ovo
+        )
+
+)
+
+[2024-11-21 16:05:24] Transaction Parameters
+Additional Info: Array
+(
+    [transaction_details] => Array
+        (
+            [order_id] => ORD-673f4c34d3ef1-1732201524
+            [gross_amount] => 15000
+        )
+
+    [item_details] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 2
+                    [price] => 15000
+                    [quantity] => 1
+                    [name] => Fried Chicken
+                )
+
+        )
+
+    [customer_details] => Array
+        (
+            [first_name] => dimas
+            [email] => dimas@gmail.com
+            [phone] => 0
+        )
+
+    [enabled_payments] => Array
+        (
+            [0] => credit_card
+            [1] => mandiri_clickpay
+            [2] => cimb_clicks
+            [3] => bca_klikbank
+            [4] => bni_va
+            [5] => mandiri_va
+            [6] => permata_va
+            [7] => bca_va
+            [8] => bri_va
+            [9] => other_va
+            [10] => gopay
+            [11] => indomaret
+            [12] => alfamart
+            [13] => dana
+            [14] => ovo
+        )
+
+)
+
