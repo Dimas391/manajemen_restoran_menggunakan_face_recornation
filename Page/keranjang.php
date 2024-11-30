@@ -24,7 +24,7 @@ if (!isset($_SESSION['id_pelanggan'])) {
 $id_pelanggan = $_SESSION['id_pelanggan'];
 
 // Ambil data produk dari keranjang berdasarkan ID pelanggan
-$sql = "SELECT k.id_keranjang, k.id_menu, k.quantity, m.nama_menu, m.harga, m.gambar_menu
+$sql = "SELECT k.id_keranjang, k.id_menu, k.quantity, m.nama_menu, m.harga, m.gambar_menu, m.diskon
         FROM keranjang k
         JOIN menu m ON k.id_menu = m.id_menu
         WHERE k.id_pelanggan = $id_pelanggan";
@@ -33,9 +33,17 @@ $result = $conn->query($sql);
 
 // Jika produk ditemukan
 $products = [];
+$totalPrice = 0; // Inisialisasi total harga
 if ($result && $result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
         $products[] = $row;
+
+        // Hitung subtotal dengan diskon
+        $subtotal = (int)$row['harga'] * (int)$row['quantity'];
+        if ($row['diskon'] > 0) {
+            $subtotal *= (1 - ($row['diskon'] / 100)); // Terapkan diskon
+        }
+        $totalPrice += $subtotal; // Tambahkan ke total harga
     }
 }
 ?>
@@ -83,15 +91,32 @@ if ($result && $result->num_rows > 0) {
         }
 
         .cart-item {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: all 0.3s ease;
-}
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.3s ease;
+}       
 
-.cart-item:hover {
-    background: rgba(255, 255, 255, 0.08);
-}
+        .cart-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .delete-button {
+            background-color: #dc2626;
+            color: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease;
+            margin-top: -8px;
+        }
+        .delete-button:hover {
+            transform: scale(1.1);
+            background-color: #b91c1c;
+        }
 
 .quantity-button {
     width: 36px;
@@ -146,6 +171,7 @@ if ($result && $result->num_rows > 0) {
     .action-button:hover {
         background-color: #7e22ce; /* Warna tombol saat di-hover */
     }
+
 }
 
     </style>
@@ -167,22 +193,48 @@ if ($result && $result->num_rows > 0) {
         <!-- Cart Items -->
         <!-- Cart Items -->
 <div class="space-y-4 mb-8">
-    <?php foreach ($products as $index => $product) : ?>
-    <div class="cart-item rounded-xl p-4">
+    <?php foreach ($products as $index => $product) : 
+         $originalSubtotal = (int)$product['harga'] * (int)$product['quantity'];
+         $discountedSubtotal = $originalSubtotal;
+         if ($product['diskon'] > 0) {
+             $discountedSubtotal = $originalSubtotal * (1 - ($product['diskon'] / 100));
+         }
+         ?>
+    <div class="cart-item rounded-xl p-4 relative">
+            <button type="button" 
+                    class="delete-button absolute top-2 right-2" 
+                    data-id-menu="<?= $product['id_menu'] ?>">
+                <i class="bi bi-trash"></i>
+            </button>
         <div class="cart-item-content flex items-center justify-between">
             <div class="cart-item-details flex items-center space-x-4">
                 <img src="../assets/allmenu/<?= htmlspecialchars($product['gambar_menu']) ?>" 
                      alt="<?= htmlspecialchars($product['nama_menu']) ?>"
                      class="w-20 h-20 rounded-lg object-cover">
                 
-                <div>
-                    <h3 class="text-lg font-semibold text-white">
-                        <?= htmlspecialchars($product['nama_menu']) ?>
-                    </h3>
-                    <p class="text-purple-400">
-                        Rp <?= number_format((int)$product['harga'], 0, ',', '.') ?>
-                    </p>
+                     <div>
+                <h3 class="text-lg font-semibold text-white">
+                    <?= htmlspecialchars($product['nama_menu']) ?>
+                </h3>
+                <!-- Price with discount -->
+                <div class="price-container">
+                    <?php if ($product['diskon'] > 0): ?>
+                        <span class="text-gray-400 line-through mr-2">
+                            Rp <?= number_format($originalSubtotal, 0, ',', '.') ?>
+                        </span>
+                        <span class="text-purple-400 font-semibold">
+                            Rp <?= number_format($discountedSubtotal, 0, ',', '.') ?>
+                        </span>
+                        <span class="ml-2 bg-red-500 text-white text-xs px-2 py-1 rounded">
+                            -<?= $product['diskon'] ?>%
+                        </span>
+                    <?php else: ?>
+                        <span class="text-purple-400">
+                            Rp <?= number_format($originalSubtotal, 0, ',', '.') ?>
+                        </span>
+                    <?php endif; ?>
                 </div>
+            </div>
             </div>
 
             <div class="cart-item-controls flex items-center space-x-4 sm:space-x-6">
@@ -206,10 +258,10 @@ if ($result && $result->num_rows > 0) {
 
                 <!-- Subtotal -->
                 <div class="text-right min-w-[100px]">
-                    <p class="text-sm text-gray-400">Subtotal</p>
-                    <p class="subtotal text-lg font-semibold text-white">
-                        Rp <?= number_format((int)$product['harga'] * (int)$product['quantity'], 0, ',', '.') ?>
-                    </p>
+                <p class="text-sm text-gray-400">Subtotal</p>
+                <p class="subtotal text-lg font-semibold text-white">
+                    Rp <?= number_format($discountedSubtotal, 0, ',', '.') ?>
+                </p>
                 </div>
             </div>
         </div>
@@ -225,13 +277,36 @@ if ($result && $result->num_rows > 0) {
             </div>
             
             <div class="flex justify-between items-center mb-6">
-                <span class="text-gray-400">Total Harga:</span>
+        <span class="text-gray-400">Total Harga:</span>
+        <div>
+            <?php 
+            $totalOriginalPrice = array_sum(array_map(function($p) { 
+                return $p['harga'] * $p['quantity']; 
+            }, $products));
+            $totalDiscountedPrice = array_sum(array_map(function($p) { 
+                $subtotal = $p['harga'] * $p['quantity'];
+                return $p['diskon'] > 0 ? $subtotal * (1 - ($p['diskon'] / 100)) : $subtotal; 
+            }, $products));
+            ?>
+            <?php if ($totalOriginalPrice != $totalDiscountedPrice): ?>
+                <div>
+                    <span class="text-gray-400 line-through mr-2">
+                        Rp <?= number_format($totalOriginalPrice, 0, ',', '.') ?>
+                    </span>
+                    <span class="text-2xl font-bold text-purple-400">
+                        Rp <?= number_format($totalDiscountedPrice, 0, ',', '.') ?>
+                    </span>
+                </div>
+                <div class="text-right text-green-500 text-sm">
+                    Hemat Rp <?= number_format($totalOriginalPrice - $totalDiscountedPrice, 0, ',', '.') ?>
+                </div>
+            <?php else: ?>
                 <span id="total-price" class="text-2xl font-bold text-purple-400">
-                    Rp <?= number_format(array_sum(array_map(function($p) { 
-                        return $p['harga'] * $p['quantity']; 
-                    }, $products)), 0, ',', '.') ?>
+                    Rp <?= number_format($totalDiscountedPrice, 0, ',', '.') ?>
                 </span>
-            </div>
+            <?php endif; ?>
+        </div>
+    </div>
 
         <button id="checkout-button" class="action-button w-full h-70 py-4 text-white font-semibold text-lg">
          Lanjutkan ke Pembayaran
@@ -264,7 +339,7 @@ if ($result && $result->num_rows > 0) {
    <script>
 document.getElementById('checkout-button').addEventListener('click', async function() {
     try {
-        // First, get the Midtrans Snap token (from ewallet.php)
+        // Fetch Midtrans Snap token
         const snapResponse = await fetch('ewallet.php', {
             method: 'POST',
             headers: {
@@ -278,24 +353,39 @@ document.getElementById('checkout-button').addEventListener('click', async funct
             // Call Midtrans Snap payment
             snap.pay(snapResult.snapToken, {
                 onSuccess: async function(result) {
-                    console.log('Payment Success:', result);
-                    
-                    // Process payment and move cart to history
-                    const processResponse = await fetch('process_payment.php', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    });
+                    try {
+                        const processResponse = await fetch('process_payment.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
 
-                    const processResult = await processResponse.json();
+                        const processResult = await processResponse.json();
 
-                    if (processResult.status === 'success') {
-                        // Redirect to order confirmation or show success message
-                        alert('Pembayaran Berhasil! Nomor Pesanan: ' + processResult.order_number);
-                        window.location.href = 'riwayat_pembelian.php'; // Optional: redirect to order history
-                    } else {
-                        alert('Gagal memproses pesanan: ' + processResult.message);
+                        if (processResult.status === 'success') {
+                    const totalHargaAsli = processResult.total_harga_asli || 0; // Default ke 0 jika undefined
+                    const totalHargaDiskon = processResult.total_harga_diskon || 0; // Default ke 0 jika undefined
+                    const hemat = processResult.hemat || 0; // Default ke 0 jika undefined
+
+                    // Detailed success alert
+                    const alertMessage = `
+                    Pembayaran Berhasil!
+                    Nomor Pesanan: ${processResult.order_number}
+
+                    Total Harga Awal: Rp ${totalHargaAsli.toLocaleString()}
+                    Total Harga Diskon: Rp ${totalHargaDiskon.toLocaleString()}
+                    Hemat: Rp ${hemat.toLocaleString()}
+                    `;
+
+                    alert(alertMessage);
+                    window.location.href = 'riwayat_pembelian.php';
+                } else {
+                    alert('Gagal memproses pesanan: ' + processResult.message);
+                }
+                    } catch (processError) {
+                        console.error('Processing Error:', processError);
+                        alert('Gagal memproses pesanan');
                     }
                 },
                 onPending: function(result) {
@@ -321,7 +411,6 @@ document.getElementById('checkout-button').addEventListener('click', async funct
 document.addEventListener('DOMContentLoaded', function() {
     const cartData = <?= json_encode($products, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
     
-    // Add event listeners to all quantity controls
     document.querySelectorAll('.quantity-controls').forEach(control => {
         const index = control.dataset.index;
         const idMenu = control.dataset.idMenu;
@@ -331,6 +420,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 e.preventDefault();
                 const action = button.dataset.action;
                 const quantitySpan = control.querySelector('.quantity-value');
+                if (!quantitySpan) {
+                    console.error('Quantity span not found');
+                    return;
+                }
+
                 let currentQuantity = parseInt(quantitySpan.textContent);
                 
                 // Calculate new quantity
@@ -357,15 +451,34 @@ document.addEventListener('DOMContentLoaded', function() {
                         
                         const result = await response.json();
                         
+                        console.log('Server Response:', result);
+                        
                         if (result.status === 'success') {
                             // Update displayed quantity
                             quantitySpan.textContent = newQuantity;
                             
+                            // Safely find the cart item and subtotal elements
+                            const cartItem = control.closest('.cart-item');
+                            if (!cartItem) {
+                                console.error('Cart item not found');
+                                return;
+                            }
+                            
+                            const subtotalCell = cartItem.querySelector('.subtotal');
+                            if (!subtotalCell) {
+                                console.error('Subtotal cell not found');
+                                return;
+                            }
+                            
                             // Update subtotal
                             const price = cartData[index].harga;
-                            const newSubtotal = price * newQuantity;
-                            const subtotalCell = control.closest('.cart-item').querySelector('.subtotal');
-                            subtotalCell.textContent = `Rp ${newSubtotal.toLocaleString('id-ID')}`;
+                            const discountPercentage = cartData[index].diskon || 0;
+                            const originalSubtotal = price * newQuantity;
+                            const newSubtotal = discountPercentage > 0 
+                                ? originalSubtotal * (1 - (discountPercentage / 100)) 
+                                : originalSubtotal;
+                            
+                            subtotalCell.textContent = `Rp ${Math.round(newSubtotal).toLocaleString('id-ID')}`;
                             
                             // Update total price
                             updateTotalPrice();
@@ -374,21 +487,98 @@ document.addEventListener('DOMContentLoaded', function() {
                             alert('Gagal mengupdate quantity: ' + result.message);
                         }
                     } catch (error) {
-                        console.error('Error:', error);
+                        console.error('Fetch Error:', error);
                         alert('Terjadi kesalahan saat mengupdate quantity');
                     }
                 }
             });
         });
     });
+
+    document.querySelectorAll('.delete-button').forEach(button => {
+            button.addEventListener('click', async function(e) {
+                e.preventDefault();
+                const idMenu = button.dataset.idMenu;
+                const cartItem = button.closest('.cart-item');
+
+                try {
+                    const response = await fetch('delete_keranjang.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            id_menu: idMenu
+                        })
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.status === 'success') {
+                        // Remove the cart item from the DOM
+                        cartItem.remove();
+                        
+                        // Update total price and items count
+                        updateTotalPrice();
+                        updateItemCount();
+                    } else {
+                        console.error('Delete failed:', result.message);
+                        alert('Gagal menghapus item: ' + result.message);
+                    }
+                } catch (error) {
+                    console.error('Fetch Error:', error);
+                    alert('Terjadi kesalahan saat menghapus item');
+                }
+            });
+        });
+
+        function updateItemCount() {
+            // Update total items count
+            const cartItems = document.querySelectorAll('.cart-item');
+            const itemCountElement = document.querySelector('div.bg-gray-800 .flex:first-child span:last-child');
+            
+            if (itemCountElement) {
+                itemCountElement.textContent = cartItems.length;
+            }
+
+            // If no items, maybe show an empty cart message
+            if (cartItems.length === 0) {
+                const cartContainer = document.querySelector('.space-y-4.mb-8');
+                cartContainer.innerHTML = `
+                    <div class="text-center text-gray-400 py-12">
+                        <i class="bi bi-cart text-6xl mb-4 block"></i>
+                        <p>Keranjang Anda kosong</p>
+                        <a href="ReservasiDanPickup.php" class="action-button inline-block mt-4 px-6 py-2">
+                            Mulai Belanja
+                        </a>
+                    </div>
+                `;
+            }
+        }
+    });
     
     function updateTotalPrice() {
+    try {
         const subtotals = Array.from(document.querySelectorAll('.subtotal'))
-            .map(cell => parseInt(cell.textContent.replace(/[^\d]/g, '')));
+            .map(cell => {
+                const value = cell.textContent.replace(/[^\d]/g, '');
+                return value ? parseInt(value) : 0;
+            });
+
         const total = subtotals.reduce((sum, subtotal) => sum + subtotal, 0);
-        document.getElementById('total-price').textContent = `Rp ${total.toLocaleString('id-ID')}`;
+
+        // Pastikan elemen total harga ada
+        const totalPriceElement = document.getElementById('total-price');
+        
+        if (totalPriceElement) {
+            totalPriceElement.textContent = `Rp ${total.toLocaleString('id-ID')}`;
+        } else {
+            console.error('Total price element not found');
+        }
+    } catch (error) {
+        console.error('Error in updateTotalPrice:', error);
     }
-});
+}
 </script>
 </body>
 </html>

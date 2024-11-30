@@ -1,7 +1,7 @@
 <?php
 include "session.php";
 
-// Database connection code
+// Database connection
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -13,14 +13,29 @@ if ($conn->connect_error) {
     die("Koneksi gagal: " . $conn->connect_error);
 }
 
-// Ambil kata kunci pencarian
+// Search and category filtering
 $search_query = isset($_GET['search']) ? $_GET['search'] : '';
+$selected_category = isset($_GET['kategori']) ? $_GET['kategori'] : 'All';
 
-// Ambil menu berdasarkan kategori dan pencarian
-$sql = "SELECT id_menu, nama_menu, keterangan, harga, gambar_menu, kategori FROM menu WHERE nama_menu LIKE ? OR keterangan LIKE ?";
+// Prepare SQL query with search and category filtering
+$sql = "SELECT id_menu, nama_menu, keterangan, harga, gambar_menu, kategori, diskon 
+        FROM menu 
+        WHERE (nama_menu LIKE ? OR keterangan LIKE ?)";
+
+if ($selected_category !== 'All') {
+    $sql .= " AND kategori = ?";
+}
+
 $stmt = $conn->prepare($sql);
-$search_param = '%' . $search_query . '%';
-$stmt->bind_param("ss", $search_param, $search_param);
+
+if ($selected_category !== 'All') {
+    $search_param = '%' . $search_query . '%';
+    $stmt->bind_param("sss", $search_param, $search_param, $selected_category);
+} else {
+    $search_param = '%' . $search_query . '%';
+    $stmt->bind_param("ss", $search_param, $search_param);
+}
+
 $stmt->execute();
 $result = $stmt->get_result();
 
@@ -34,6 +49,7 @@ if ($result && $result->num_rows > 0) {
 $conn->close();
 ?>
 
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -46,7 +62,7 @@ $conn->close();
         body {
             background-color: #1a1a1a;
             color: #ffffff;
-            margin: 0;
+            margin: 0;  
             min-height: 100vh;
             padding-bottom: 70px;
         }
@@ -186,6 +202,30 @@ $conn->close();
             padding: 2rem;
             grid-column: 1 / -1;
         }
+
+        .original-price {
+            text-decoration: line-through;
+            color: #9CA3AF;
+            margin-right: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .discount-badge {
+            background-color: #FF6B6B;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        .discounted-price {
+            color: #9333EA;
+            font-weight: bold;
+        }
+
     </style>
 </head>
 <body>
@@ -201,8 +241,9 @@ $conn->close();
         <div class="search-bar">
             <form method="GET" action="menu.php" class="flex items-center w-full">
                 <i class="bi bi-search text-gray-400 mr-2"></i>
-                <input type="text" name="search" placeholder="Search menu..." class="search-input" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
-                <button type="submit" class="hidden">Search</button> <!-- Tombol tersembunyi untuk submit -->
+                <input type="text" name="search" placeholder="Search menu..." class="search-input" 
+                    value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
+                <button type="submit" class="hidden">Search</button>
             </form>
         </div>
     </div>
@@ -222,65 +263,84 @@ $conn->close();
 
     <div class="menu-grid">
         <?php
-        if ($search_query) {
-            echo '<h2 class="text-white mb-4">Hasil pencarian untuk: <strong>' . htmlspecialchars($search_query) . '</strong></h2>';
+        function renderMenuItem($menu) {
+            $originalPrice = $menu['harga'] ;
+            $hasDiscount = $menu['diskon'] > 0;
+            $discountedPrice = $hasDiscount 
+                ? $originalPrice * (1 - ($menu['diskon'] / 100)) 
+                : $originalPrice;
+
+            $menuHtml = '
+            <a href="detail_order.php?id_menu='.$menu['id_menu'].'" class="menu-item relative">
+                <img src="../assets/allmenu/'.$menu['gambar_menu'].'" alt="'.$menu['nama_menu'].'">';
+            
+            if ($hasDiscount) {
+                $menuHtml .= '
+                    <div class="discount-badge">
+                        -'.$menu['diskon'].'%
+                    </div>';
+            }
+            
+            $menuHtml .= '
+                <h3 class="font-semibold text-white mb-1">'.$menu['nama_menu'].'</h3>
+                <p class="text-gray-400 text-sm mb-2">'.$menu['keterangan'].'</p>
+                <div class="price-container">';
+            
+            if ($hasDiscount) {
+                $menuHtml .= '
+                    <span class="original-price"> Rp'.number_format($originalPrice, 0, ',', '.').'
+                    </span>
+                    <span class="discounted-price"><br>
+                        Rp '.number_format($discountedPrice, 0, ',', '.').'
+                    </span>';
+            } else {
+                $menuHtml .= '
+                    <span class="text-purple-400 font-bold">
+                        Rp '.number_format($originalPrice, 0, ',', '.').'
+                    </span>';
+            }
+            
+            $menuHtml .= '
+                </div>
+            </a>';
+
+            return $menuHtml;
         }
 
-        $selected_category = isset($_GET['kategori']) ? $_GET['kategori'] : 'All';
-
-        if ($selected_category === 'All') {
+        // Render menu items
+        if (empty($menu_by_category)) {
+            echo '<div class="empty-message">
+                <i class="bi bi-inbox text-4xl mb-2 block"></i>
+                <p>Tidak ada menu yang tersedia.</p>
+            </div>';
+        } else {
             foreach ($menu_by_category as $category => $menus) {
                 foreach ($menus as $menu) {
-                    echo '
-                    <a href="detail_order.php?id_menu='.$menu['id_menu'].'" class="menu-item">
-                        <img src="../assets/allmenu/'.$menu['gambar_menu'].'" alt="'.$menu['nama_menu'].'">
-                        <h3 class="font-semibold text-white mb-1">'.$menu['nama_menu'].'</h3>
-                        <p class="text-gray-400 text-sm mb-2">'.$menu['keterangan'].'</p>
-                        <div class="text-purple-400 font-bold">Rp '.number_format($menu['harga'], 0, ',', '.').'</div>
-                    </a>';
+                    echo renderMenuItem($menu);
                 }
-            }
-        } else {
-            if (isset($menu_by_category[$selected_category])) {
-                foreach ($menu_by_category[$selected_category] as $menu) {
-                    echo '
-                    <a href="detail_order.php?id_menu='.$menu['id_menu'].'" class="menu-item">
-                        <img src="../assets/allmenu/'.$menu['gambar_menu'].'" alt="'.$menu['nama_menu'].'">
-                        <h3 class="font-semibold text-white mb-1">'.$menu['nama_menu'].'</h3>
-                                               <p class="text-gray-400 text-sm mb-2">'.$menu['keterangan'].'</p>
-                        <div class="text-purple-400 font-bold">Rp '.number_format($menu['harga'], 0, ',', '.').'</div>
-                    </a>';
-                }
-            } else {
-                echo '<div class="empty-message">
-                    <i class="bi bi-inbox text-4xl mb-2 block"></i>
-                    <p>Tidak ada menu dalam kategori ini.</p>
-                </div>';
             }
         }
         ?>
     </div>
 
-    <nav class="fixed bottom-0 left-0 right-0 bg-gray-800 p-4">
-        <div class="max-w-screen-xl mx-auto flex justify-around">
-            <a href="home.php" class="text-gray-400 flex flex-col items-center">
-                <i class="bi bi-house"></i>
-                <span class="text-sm">Home</span>
-            </a>
-            <a href="scan.php" class="text-gray-400 flex flex-col items-center">
-                <i class="bi bi-qr-code"></i>
-                <span class="text-sm">Scan</span>
-            </a>
-            <a href="keranjang.php" class="text-white flex flex-col items-center">
-                <i class="bi bi-cart"></i>
-                <span class="text-sm">Keranjang</span>
-            </a>
-            <a href="profile.php" class="text-gray-400 flex flex-col items-center">
-                <i class="bi bi-person"></i>
-                <span class="text-sm">Profile</span>
-            </a>
-        </div>
+    <!-- Bottom Navigation -->
+    <nav class="nav-bottom">
+        <a href="home.php" class="nav-item">
+            <i class="nav-icon bi bi-house"></i>
+            Home
+        </a>
+        <a href="scan.php" class="nav-item">
+            <i class="nav-icon bi bi-qr-code"></i>
+            Scan
+        </a>
+        <a href="keranjang.php" class="nav-item">
+            <i class="nav-icon bi bi-cart"></i>
+            Keranjang
+        </a>
+        <a href="profile.php" class="nav-item">
+            <i class="nav-icon bi bi-person"></i>
+            Profile
+        </a>
     </nav>
-
 </body>
 </html>

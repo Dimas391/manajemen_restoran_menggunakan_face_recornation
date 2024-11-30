@@ -34,8 +34,43 @@ try {
     $stmt_cart->execute();
     $result_cart = $stmt_cart->get_result();
 
-    $message = "Your order has been placed successfully!"; // Notification message
+    // Initialize total price variables
+    $totalOriginalPrice = 0;
+    $totalDiscountedPrice = 0;
 
+    // Check if there are items in the cart
+    if ($result_cart->num_rows > 0) {
+        // Loop through cart items to calculate totals
+        while ($row = $result_cart->fetch_assoc()) {
+            $id_menu = $row['id_menu'];
+            $quantity = $row['quantity'];
+
+            // Fetch menu details
+            $query_menu = "SELECT harga, diskon FROM menu WHERE id_menu = ?";
+            $stmt_menu = $conn->prepare($query_menu);
+            $stmt_menu->bind_param("i", $id_menu);
+            $stmt_menu->execute();
+            $result_menu = $stmt_menu->get_result();
+
+            if ($result_menu->num_rows > 0) {
+                $menu_item = $result_menu->fetch_assoc();
+                $harga = $menu_item['harga'];
+                $diskon = $menu_item['diskon'];
+
+                // Calculate original and discounted prices
+                $originalSubtotal = $harga * $quantity;
+                $discountedSubtotal = $diskon > 0 ? $originalSubtotal * (1 - ($diskon / 100)) : $originalSubtotal;
+
+                // Accumulate totals
+                $totalOriginalPrice += $originalSubtotal;
+                $totalDiscountedPrice += $discountedSubtotal;
+            }
+            $stmt_menu->close();
+        }
+    }
+
+    // Prepare notification message
+    $message = "Your order has been placed successfully!";
     $sql = "INSERT INTO notifications (id_pelanggan, message) VALUES (?, ?)";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("is", $id_pelanggan, $message);
@@ -51,9 +86,14 @@ try {
     // 3. Commit transaksi
     $conn->commit();
 
+    $hemat = $totalOriginalPrice - $totalDiscountedPrice;
+
     echo json_encode([
         'status' => 'success',
         'order_number' => 'ORD-' . time(), // Generate nomor pesanan unik
+        'total_harga_asli' => $totalOriginalPrice,
+        'total_harga_diskon' => $totalDiscountedPrice,
+        'hemat' => $hemat,
         'message' => 'Keranjang berhasil dikosongkan'
     ]);
 

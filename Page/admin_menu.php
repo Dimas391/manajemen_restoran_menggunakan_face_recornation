@@ -28,17 +28,23 @@ $result = $conn->query($sql);
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
     <style>
         body {
-            background-color: #f3f4f6; /* Latar belakang halaman */
-            font-family: 'Arial', sans-serif;
-            display: flex;
-        }
+        display: flex;
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        background-color: #f3f4f6;
+        font-family: 'Arial', sans-serif;
+}
+
 
         .sidebar {
+            position: fixed;
             width: 250px;
-            background-color: #e5e7eb; /* Abu-abu untuk sidebar */
+            background-color: #e5e7eb;
             height: 100vh;
             padding: 20px;
             box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            flex-shrink: 0; /* Sidebar tetap pada ukuran tetap */
         }
 
         .sidebar .logo-container {
@@ -82,13 +88,12 @@ $result = $conn->query($sql);
         }
 
         .main-content {
-            flex-grow: 1;
-            padding: 20px;
-            background-color: white; /* Latar belakang konten utama */
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            margin-left: 20px; /* Space between sidebar and content */
-        }
+        flex-grow: 1;
+        padding: 20px;
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
 
         .main-content .header {
             display: flex;
@@ -204,9 +209,9 @@ $result = $conn->query($sql);
         </div>
         <nav>
             <ul>
-                <li><a href="#"><i class="bi bi-house-door" style="margin: center;"></i> Dashboard</a></li>
-                <li><a href="#"><i class="bi bi-list-ul"></i> Menu</a></li>
-                <li><a href="#"><i class="bi bi-calendar-check"></i> Reservasi</a></li>
+                <li><a href="reservasi_pickup_results.php"><i class="bi bi-cart" style="margin: center;"></i> Pemesanan</a></li>
+                <li><a href="admin_menu.php"><i class="bi bi-list-ul"></i> Menu</a></li>
+                <li><a href="admin_profile.php"><i class="bi bi-calendar-check"></i> Detail Reservasi</a></li>
                 <li><a href="#"><i class="bi bi-box-arrow-right"></i> Log Out</a></li>
             </ul>
         </nav>

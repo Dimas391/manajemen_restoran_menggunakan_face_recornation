@@ -59,8 +59,21 @@ $id_menu = (int)$data['id_menu'];
 $quantity = (int)$data['quantity'];
 
 // Update the cart
+// Update the cart
 $stmt = $conn->prepare("UPDATE keranjang SET quantity = ? WHERE id_menu = ? AND id_pelanggan = ?");
+if (!$stmt) {
+    echo json_encode([
+        "status" => "error",
+        "message" => "Prepare statement failed",
+        "debug" => $conn->error
+    ]);
+    exit;
+}
+
 $stmt->bind_param("iii", $quantity, $id_menu, $id_pelanggan);
+
+// Logging values before execution
+error_log("Executing update with quantity: $quantity, id_menu: $id_menu, id_pelanggan: $id_pelanggan");
 
 if ($stmt->execute()) {
     echo json_encode([
@@ -75,7 +88,10 @@ if ($stmt->execute()) {
     echo json_encode([
         "status" => "error",
         "message" => "Failed to update cart",
-        "debug" => $stmt->error
+        "debug" => [
+            "stmt_error" => $stmt->error,
+            "sql" => "UPDATE keranjang SET quantity = $quantity WHERE id_menu = $id_menu AND id_pelanggan = $id_pelanggan"
+        ]
     ]);
 }
 

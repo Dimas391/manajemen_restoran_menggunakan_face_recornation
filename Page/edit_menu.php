@@ -12,6 +12,9 @@ if ($conn->connect_error) {
     die("Koneksi gagal: " . $conn->connect_error);
 }
 
+$alertMessage = ""; // Variabel untuk pesan alert
+$redirect = false;  // Variabel untuk pengalihan halaman
+
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id_menu'])) {
     $id_menu = intval($_GET['id_menu']);
     $sql = "SELECT * FROM menu WHERE id_menu = $id_menu";
@@ -37,11 +40,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id_menu'])) {
             WHERE id_menu = $id_menu";
 
     if ($conn->query($sql) === TRUE) {
-        // Redirect ke admin_addmenu.php
-        header("Location: admin_menu.php");
-        exit();
+        $alertMessage = "Menu berhasil diperbarui!";
+        $redirect = true; // Set redirect ke admin_menu.php
     } else {
-        echo "Error: " . $conn->error;
+        $alertMessage = "Error: " . $conn->error;
     }
 }
 
@@ -130,8 +132,19 @@ $conn->close();
             text-decoration: underline;
         }
     </style>
+    <script>
+        // Fungsi untuk menampilkan alert dan mengarahkan halaman
+        function handleAlert(message, redirect) {
+            if (message) {
+                alert(message); // Tampilkan pesan alert
+                if (redirect) {
+                    window.location.href = "admin_menu.php"; // Arahkan ke halaman admin
+                }
+            }
+        }
+    </script>
 </head>
-<body>
+<body onload="handleAlert('<?php echo $alertMessage; ?>', <?php echo $redirect ? 'true' : 'false'; ?>)">
     <div class="edit-container">
         <h1>Edit Menu</h1>
         <form method="POST" action="edit_menu.php">

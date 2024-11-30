@@ -12,6 +12,9 @@ if ($conn->connect_error) {
     die("Koneksi gagal: " . $conn->connect_error);
 }
 
+$alertMessage = ""; // Variabel untuk pesan alert
+$redirect = false;  // Variabel untuk pengalihan halaman
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nama_menu = $_POST['nama_menu'];
     $keterangan = $_POST['keterangan'];
@@ -21,14 +24,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $sql = "INSERT INTO menu (nama_menu, keterangan, harga, gambar_menu) VALUES ('$nama_menu','$keterangan', '$harga', '$gambar_menu')";
 
     if ($conn->query($sql) === TRUE) {
-        // Show alert and redirect to admin_menu.php
-        echo "<script>
-                alert('Menu berhasil ditambahkan!');
-                window.location.href = 'admin_menu.php';
-              </script>";
-        exit();
+        $alertMessage = "Menu berhasil ditambahkan!";
+        $redirect = true; // Aktifkan pengalihan
     } else {
-        echo "Error: " . $conn->error;
+        $alertMessage = "Error: " . $conn->error;
     }
 }
 
@@ -91,10 +90,21 @@ $conn->close();
             background-color: #500050;
         }
     </style>
+    <script>
+        // Fungsi untuk menampilkan alert dan mengarahkan halaman
+        function handleAlert(message, redirect) {
+            if (message) {
+                alert(message); // Tampilkan alert
+                if (redirect) {
+                    window.location.href = "admin_menu.php"; // Arahkan ke halaman admin
+                }
+            }
+        }
+    </script>
 </head>
-<body>
+<body onload="handleAlert('<?php echo $alertMessage; ?>', <?php echo $redirect ? 'true' : 'false'; ?>)">
     <div class="form-container">
-        <h1>Add New Menu</h1>
+        <h1>Tambah Menu Baru</h1>
         <form method="POST" action="">
             <label for="nama_menu">Nama Menu:</label>
             <input type="text" id="nama_menu" name="nama_menu" required>

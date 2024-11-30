@@ -23,25 +23,24 @@ if (!isset($_SESSION['id_pelanggan'])) {
 // Ambil ID pelanggan dari session
 $id_pelanggan = $_SESSION['id_pelanggan'];
 
-// Ambil data riwayat pembelian
+// Ambil data riwayat pembelian dari tabel pesanan
 $sql = "SELECT 
-            p.id_pesanan, 
-            p.total_harga, 
-            p.created_at, 
-            p.status,
-            m.nama_menu,
-            m.gambar_menu,
-            m.harga
+            id_pesanan, 
+            total_harga,
+            created_at, 
+            status,
+            id_menu  
         FROM 
-            pesanan p
-        JOIN 
-            menu m ON p.id_pesanan = m.id_menu
+            pesanan 
         WHERE 
-            p.id_pelanggan = $id_pelanggan
+            id_pelanggan = ? 
         ORDER BY 
-            p.created_at DESC";
+            created_at DESC";
 
-$result = $conn->query($sql);
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $id_pelanggan);  // Mengikat parameter
+$stmt->execute();
+$result = $stmt->get_result();
 
 // Jika riwayat pembelian ditemukan
 $purchases = [];
@@ -51,11 +50,29 @@ if ($result && $result->num_rows > 0) {
     }
 }
 
-// Kelompokkan pembelian berdasarkan ID pembayaran
-$grouped_purchases = [];
-foreach ($purchases as $purchase) {
-    $grouped_purchases[$purchase['id_pesanan']][] = $purchase;
+// Ambil data menu berdasarkan id_menu yang ada di pesanan
+$menu_ids = array_column($purchases, 'id_menu');
+$menu_ids = array_unique($menu_ids); // Menghindari duplikasi
+
+$menu_data = [];
+if (!empty($menu_ids)) {
+    // Siapkan placeholder untuk query
+    $placeholders = implode(',', array_fill(0, count($menu_ids), '?'));
+    $sql_menu = "SELECT id_menu, nama_menu, gambar_menu, harga FROM menu WHERE id_menu IN ($placeholders)";
+    $stmt_menu = $conn->prepare($sql_menu);
+    $stmt_menu->bind_param(str_repeat('i', count($menu_ids)), ...$menu_ids); // Mengikat parameter
+    $stmt_menu->execute();
+    $result_menu = $stmt_menu->get_result();
+
+    while ($row_menu = $result_menu->fetch_assoc()) {
+        $menu_data[$row_menu['id_menu']] = $row_menu; // Simpan menu berdasarkan id_menu
+    }
+
+    $stmt_menu->close(); // Menutup statement menu
 }
+
+$stmt->close();  // Menutup statement pesanan
+$conn->close();  // Menutup koneksi
 ?>
 
 <!DOCTYPE html>
@@ -73,33 +90,22 @@ foreach ($purchases as $purchase) {
         }
 
         .purchase-item {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: all 0.3s ease;
-}
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
 
-.purchase-item:hover {
-    background: rgba(255, 255, 255, 0.08);
-}
+        .purchase-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
 
-.action-button {
-    background-color: #9333EA;
-    transition: all 0.3s ease;
-    border-radius: 25px;
-}
-
-.action-button:hover {
-    transform: scale(1.05);
-    background-color: #7C3AED;
-}
-
-@media (max-width: 640px) {
-    .purchase-details {
-        flex-direction: column;
-        gap: 1rem;
-    }
-}
+        @media (max-width: 640px) {
+            .purchase-details {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
     </style>
 </head>
 
@@ -114,97 +120,96 @@ foreach ($purchases as $purchase) {
         </div>
 
         <!-- Page Title -->
-        <h1 class="text-2xl font-bold mb-8 text-center text-purple-400">Riwayat Pembelian</h1>
+        <h1 class="text-2xl font-bold mb-8 text-center text-purple-400">Riwayat Pembelian        </h1>
 
-        <!-- Purchase History -->
-        <div class="space-y-6 mb-8">
-            <?php if (empty($grouped_purchases)): ?>
-                <div class="text-center text-gray-400 py-12">
-                    <i class="bi bi-cart-x text-4xl mb-4 block"></i>
-                    <p>Belum ada riwayat pembelian</p>
+<!-- Purchase History -->
+<div class="space-y-6 mb-8">
+    <?php if (empty($purchases)): ?>
+        <div class="text-center text-gray-400 py-12">
+            <i class="bi bi-cart-x text-4xl mb-4 block"></i>
+            <p>Belum ada riwayat pembelian</p>
+        </div>
+    <?php else: ?>
+        <?php foreach ($purchases as $purchase): ?>
+            <?php 
+                $menu_item = $menu_data[$purchase['id_menu']] ?? null; // Ambil data menu berdasarkan id_menu
+            ?>
+            <div class="purchase-item rounded-xl p-4">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-sm text-gray-400">
+                        No. Pesanan: <?= htmlspecialchars($purchase['id_pesanan']) ?>
+                    </span>
+                    <span class="text-sm <?= 
+                        $purchase['status'] == 'Berhasil' ? 'text-green-400' : 'text-yellow-400'
+                    ?>">
+                        <?= htmlspecialchars($purchase['status']) ?>
+                    </span>
                 </div>
-            <?php endif; ?>
 
-            <?php foreach ($grouped_purchases as $id_pembayaran => $purchase_group): ?>
-                <?php 
-                    $first_purchase = $purchase_group[0];
-                    // $total_items = array_sum(array_column($purchase_group, 'quantity'));
-                ?>
-                <div class="purchase-item rounded-xl p-4">
-                    <div class="flex justify-between items-center mb-4">
-                        <span class="text-sm text-gray-400">
-                            No. Pesanan: <?= htmlspecialchars($id_pembayaran) ?>
-                        </span>
-                        <!-- <span class="text-sm <?= 
-                            $first_purchase['status'] == 'Berhasil' ? 'text-green-400' : 'text-yellow-400'
-                        ?>">
-                            <?= htmlspecialchars($first_purchase['status']) ?>
-                        </span> -->
-                    </div>
-
-                    <div class="purchase-details flex items-center space-x-4 mb-4">
-                        <div class="flex-1">
-                            <?php foreach ($purchase_group as $purchase): ?>
-                                <div class="flex items-center space-x-3 mb-2">
-                                    <img src="../assets/allmenu/<?= htmlspecialchars($purchase['gambar_menu']) ?>" 
-                                         alt="<?= htmlspecialchars($purchase['nama_menu']) ?>"
-                                         class="w-16 h-16 rounded-lg object-cover">
-                                    <div>
-                                        <h3 class="text-lg font-semibold text-white">
-                                            <?= htmlspecialchars($purchase['nama_menu']) ?>
-                                        </h3>
-                                        <!-- <p class="text-sm text-purple-400">
-                                            <?= (int)$purchase['quantity'] ?> x Rp <?= number_format((int)$purchase['harga'], 0, ',', '.') ?>
-                                        </p> -->
-                                    </div>
+                <div class="purchase-details flex items-center space-x-4 mb-4">
+                    <div class="flex-1">
+                        <?php if ($menu_item): ?>
+                            <div class="flex items-center space-x-3 mb-2">
+                                <img src="../assets/allmenu/<?= htmlspecialchars($menu_item['gambar_menu']) ?>" 
+                                     alt="<?= htmlspecialchars($menu_item['nama_menu']) ?>"
+                                     class="w-16 h-16 rounded-lg object-cover">
+                                <div>
+                                    <h3 class="text-lg font-semibold text-white">
+                                        <?= htmlspecialchars($menu_item['nama_menu']) ?>
+                                    </h3>
+                                    
                                 </div>
-                            <?php endforeach; ?>
-                        </div>
-                    </div>
-
-                    <div class="bg-gray-800 rounded-lg p-3">
-                        <!-- <div class="flex justify-between items-center">
-                            <span class="text-gray-400">Total Items:</span>
-                            <span class="text-white font-semibold"><?= $total_items ?></span>
-                        </div> -->
-                        <div class="flex justify-between items-center mt-2">
-                            <span class="text-gray-400">Total Harga:</span>
-                            <span class="text-xl font-bold text-purple-400">
-                                Rp <?= number_format((int)$first_purchase['total_harga'], 0, ',', '.') ?>
-                            </span>
-                        </div>
-                        <div class="flex justify-between items-center mt-2">
-                            <span class="text-gray-400">Tanggal:</span>
-                            <span class="text-sm text-white">
-                                <?= date('d M Y, H:i', strtotime($first_purchase['created_at'])) ?>
-                            </span>
-                        </div>
+                            </div>
+                        <?php else: ?>
+                            <p class="text-sm text-red-400">Menu tidak ditemukan</p>
+                        <?php endif; ?>
                     </div>
                 </div>
-            <?php endforeach; ?>
-        </div>
-    </div>
 
-    <!-- Navigation -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-gray-800 p-4">
-        <div class="max-w-screen-xl mx-auto flex justify-around">
-            <a href="home.php" class="text-gray-400 flex flex-col items-center">
-                <i class="bi bi-house"></i>
-                <span class="text-sm">Home</span>
-            </a>
-            <a href="scan.php" class="text-gray-400 flex flex-col items-center">
-                <i class="bi bi-qr-code"></i>
-                <span class="text-sm">Scan</span>
-            </a>
-            <a href="keranjang.php" class="text-gray-400 flex flex-col items-center">
-                <i class="bi bi-cart"></i>
-                <span class="text-sm">Keranjang</span>
-            </a>
-            <a href="profile.php" class="text-white flex flex-col items-center">
-                <i class="bi bi-person"></i>
-                <span class="text-sm">Profile</span>
-            </a>
-        </div>
-    </nav>
+                <div class="bg-gray-800 rounded-lg p-3">
+                    <div class="flex justify-between items-center mt-2">
+                        <span class="text-gray-400">Total Harga:</span>
+                        <span class="text-xl font-bold text-purple-400">
+                            Rp <?= number_format((int)$purchase['total_harga'], 0, ',', '.') ?>
+                        </span>
+                    </div>
+                    <div class="flex justify-between items-center mt-2">
+                        <span class="text-gray-400">Tanggal:</span>
+                        <span class="text-sm text-white">
+                            <?= date('d M Y, H:i', strtotime($purchase['created_at'])) ?>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    <?php endif; ?>
+</div>
+</div>
+
+<!-- Navigation -->
+<nav class="fixed bottom-0 left-0 right-0 bg-gray-800 p-4">
+<div class="max-w-screen-xl mx-auto flex justify-around">
+    <a href="home.php" class="text-gray-400 flex flex-col items-center">
+        <i class="bi bi-house"></i>
+        <span class="text-sm">Home</span>
+    </a>
+    <a href="scan.php" class="text-gray-400 flex flex-col items-center">
+        <i class="bi bi-qr-code"></i>
+        <span class="text-sm">Scan</span>
+    </a>
+    <a href="keranjang.php" class="text-gray-400 flex flex-col items-center">
+        <i class="bi bi-cart"></i>
+        <span class="text-sm">Keranjang</span>
+    </a>
+    <a href="riwayat.php" class="text-purple-400 flex flex-col items-center">
+        <i class="bi bi-clock-history"></i>
+        <span class="text-sm">Riwayat</span>
+    </a>
+    <a href="profile.php" class="text-gray-400 flex flex-col items-center">
+        <i class="bi bi-person"></i>
+        <span class="text-sm">Profile</span>
+    </a>
+</div>
+</nav>
 </body>
 </html>
