@@ -471,6 +471,7 @@ body {
                 <li><a href="reservasi_pickup_results.php"><i class="bi bi-cart" style="margin: center;"></i> Pemesanan</a></li>
                 <li><a href="admin_menu.php"><i class="bi bi-list-ul"></i> Menu</a></li>
                 <li><a href="admin_profile.php"><i class="bi bi-calendar-check"></i> Detail Reservasi</a></li>
+                <li><a href="kitchen.php">🍳 Kitchen</a></li>
                 <li><a href="#"><i class="bi bi-box-arrow-right"></i> Log Out</a></li>
             </ul>
         </nav>
