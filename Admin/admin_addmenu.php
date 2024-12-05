@@ -171,6 +171,7 @@ $result = $conn->query($sql);
                 <li><a href="#"><i class="bi bi-house-door"></i> Dashboard</a></li>
                 <li><a href="#"><i class="bi bi-list-ul"></i> Menu</a></li>
                 <li><a href="#"><i class="bi bi-calendar-check"></i> Reservasi</a></li>
+                <li><a href="kitchen.php">🍳 Kitchen</a></li>
                 <li><a href="#"><i class="bi bi-box-arrow-right"></i> Log Out</a></li>
             </ul>
         </nav>
