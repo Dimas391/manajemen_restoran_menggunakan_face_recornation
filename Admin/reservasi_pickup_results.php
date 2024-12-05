@@ -52,7 +52,6 @@ $pickup_query = "SELECT id_pickup, nomor_telepon, email FROM pickup";
 $pickup_result = $conn->query($pickup_query);
 ?>
 
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -211,6 +210,11 @@ $pickup_result = $conn->query($pickup_query);
         .sidebar nav ul li a:hover {
             background-color: #d1d5db;
         }
+
+        /* Menggeser tombol Detail sedikit ke kiri */
+        .action-button {
+            margin-left: -10px; /* Menggeser tombol sedikit ke kiri */
+        }
     </style>
 </head>
 <body class="bg-white text-black">
@@ -236,6 +240,7 @@ $pickup_result = $conn->query($pickup_query);
                 <li><a href="reservasi_pickup_results.php"><i class="bi bi-cart"></i> Pemesanan</a></li>
                 <li><a href="admin_menu.php"><i class="bi bi-list-ul"></i> Menu</a></li>
                 <li><a href="admin_profile.php"><i class="bi bi-calendar-check"></i> Detail Reservasi</a></li>
+                <li><a href="kitchen.php">🍳 Kitchen</a></li>
                 <li><a href="logout.php"><i class="bi bi-box-arrow-right"></i> Log Out</a></li>
             </ul>
         </nav>
@@ -259,7 +264,6 @@ $pickup_result = $conn->query($pickup_query);
                                 <tr>
                                     <th class="px-2 py-2">Nama Pelanggan</th>
                                     <th class="px-2 py-2">Tanggal Reservasi</th>
-                                    <th class="px-2 py-2">Status</th>
                                     <th class="px-2 py-2">Aksi</th>
                                 </tr>
                             </thead>
@@ -269,146 +273,60 @@ $pickup_result = $conn->query($pickup_query);
                                         <td class="px-2 py-2"><?php echo htmlspecialchars($row['nama_pelanggan']); ?></td>
                                         <td class="px-2 py-2"><?php echo htmlspecialchars($row['tgl_reservasi']); ?></td>
                                         <td class="px-2 py-2">
-                                            <button class="status-button status-<?php echo strtolower($row['status']); ?>" 
-                                                    onclick="showStatusPopup(<?php echo $row['id_reservasi']; ?>)">
-                                                <?php echo htmlspecialchars($row['status']); ?>
-                                            </button>
-
-                                            <!-- Status Change Popup -->
-                                            <div id="popup-<?php echo $row['id_reservasi']; ?>" 
-                                                 class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
-                                                <div class="bg-white text-gray-800 rounded-lg p-4 w-full max-w-md mx-4">
-                                                    <h3 class="text-xl font-semibold mb-4">Pilih Status Reservasi</h3>
-                                                    <form method="POST" action="" class="space-y-2">
-                                                        <input type="hidden" name="id_reservasi" value="<?php echo $row['id_reservasi']; ?>">
-                                                        <button type="submit" name="status" value="Pending" 
-                                                                class="status-button status-pending w-full mb-2">Pending</button>
-                                                        <button type="submit" name="status" value="Proses" 
-                                                                class="status-button status-proses w-full mb-2">Proses</button>
-                                                        <button type="submit" name="status" value="Complete" 
-                                                                class="status-button status-complete w-full">Complete</button>
-                                                    </form>
-                                                    <button onclick="hideStatusPopup(<?php echo $row['id_reservasi']; ?>)" 
-                                                            class="mt-4 text-sm text-red-500 w-full">Tutup</button>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="px-2 py-2">
-                                        <a href="admin_profile.php?id_reservasi=<?php echo $row['id_reservasi']; ?>" 
-                                        class="action-button bg-blue-500 text-white p-2 rounded w-full block text-center">
-                                            Detail
-                                        </a>
-                                    </td>
-                                  </tr>
-                                <?php endwhile; ?>
-                            </tbody>
-                        </table>
-                    <?php else: ?>
-                        <p class="text-center text-gray-400">Tidak ada reservasi.</p>
-                    <?php endif; ?>
-                </div>
-            </div>
-
-            <!-- Pickup Section -->
-            <div class="bg-gray-800 rounded-xl p-4">
-                <h2 class="text-2xl font-semibold text-purple-400 mb-4">Pick Up</h2>
-
-                <div class="responsive-table">
-                    <?php if ($pickup_result->num_rows > 0): ?>
-                        <table class="w-full table-auto text-left text-gray-400">
-                            <thead>
-                                <tr>
-                                    <th class="px-2 py-2">ID Pick Up</th>
-                                    <th class="px-2 py-2">Nomor Telepon</th>
-                                    <th class="px-2 py-2">Email</th>
-                                    <th class="px-2 py-2">Status</th>
-                                    <th class="px-2 py-2">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php while ($row = $pickup_result->fetch_assoc()): ?>
-                                    <tr>
-                                        <td class="px-2 py-2"><?php echo htmlspecialchars($row['id_pickup']); ?></td>
-                                        <td class="px-2 py-2"><?php echo htmlspecialchars($row['nomor_telepon']); ?></td>
-                                        <td class="px-2 py-2"><?php echo htmlspecialchars($row['email']); ?></td>
-                                        <td class="px-2 py-2">Tunggu Konfirmasi</td>
-                                        <td class="px-2 py-2">
-                                            <button onclick="showPesananDetail(<?php echo $row['id_pickup']; ?>)" class="action-button bg-blue-500 text-white p-2 rounded w-full">
+                                            <a href="admin_profile.php?id_reservasi=<?php echo $row['id_reservasi']; ?>" 
+                                               class="action-button bg-blue-500 text-white p-2 rounded w-full block text-center">
                                                 Detail
-                                            </button>
+                                            </a>
                                         </td>
                                     </tr>
                                 <?php endwhile; ?>
                             </tbody>
                         </table>
                     <?php else: ?>
-                        <p class="text-center text-gray-400">Tidak ada pick up.</p>
+                        <p>Tidak ada data reservasi ditemukan.</p>
+                    <?php endif; ?>
+                </div>
+            </div>
+
+            <!-- Pickup Section -->
+            <div class="bg-gray-800 rounded-xl p-4">
+                <h2 class="text-2xl font-semibold text-purple-400 mb-4">Pickup</h2>
+                <div class="responsive-table">
+                    <?php if ($pickup_result->num_rows > 0): ?>
+                        <table class="w-full table-auto text-left text-gray-400">
+                            <thead>
+                                <tr>
+                                    <th class="px-2 py-2">Nomor Telepon</th>
+                                    <th class="px-2 py-2">Email</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php while ($row = $pickup_result->fetch_assoc()): ?>
+                                    <tr>
+                                        <td class="px-2 py-2"><?php echo htmlspecialchars($row['nomor_telepon']); ?></td>
+                                        <td class="px-2 py-2"><?php echo htmlspecialchars($row['email']); ?></td>
+                                    </tr>
+                                <?php endwhile; ?>
+                            </tbody>
+                        </table>
+                    <?php else: ?>
+                        <p>Tidak ada data pickup ditemukan.</p>
                     <?php endif; ?>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Popup untuk menampilkan detail pesanan -->
-    <div id="popup-detail" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center hidden">
-        <div class="bg-white text-gray-800 rounded-lg p-4 w-full max-w-md mx-4">
-            <div id="popup-content"></div>
-            <button onclick="hidePopupDetail()" class="mt-4 text-sm text-red-500 w-full">Tutup</button>
-        </div>
-    </div>
-
     <script>
         function toggleSidebar() {
-            const sidebar = document.querySelector('.sidebar');
-            const overlay = document.querySelector('.sidebar-overlay');
-            sidebar.classList.toggle('active');
-            overlay.style.display = sidebar.classList.contains('active') ? 'block' : 'none';
-        }
-
-        function showStatusPopup(id_reservasi) {
-            document.getElementById('popup-' + id_reservasi).style.display = 'flex';
-        }
-
-        function hideStatusPopup(id_reservasi) {
-            document.getElementById('popup-' + id_reservasi).style.display = 'none';
-        }
-
-        function showPesananDetail(id_reservasi) {
-            fetch(`get_pesanan_detail.php?id_reservasi=${id_reservasi}`)
-                .then(response => response.json())
-                .then(data => {
-                    let detailContent = '<h3 class="text-lg font-semibold mb-4">Detail Pesanan</h3>';
-                    if (data.length > 0) {
-                        detailContent += '<table class="w-full">';
-                        detailContent += '<thead><tr><th class="text-left">Menu</th><th class="text-right">Jumlah</th></tr></thead>';
-                        detailContent += '<tbody>';
-                        data.forEach(item => {
-                            detailContent += `
-                                <tr>
-                                    <td>${item.nama_menu}</td>
-                                    <td class="text-right">${item.harga}</td>
-                                </tr>
-                            `;
-                        });
-                        detailContent += '</tbody></table>';
-                    } else {
-                        detailContent += '<p class="text-center text-gray-500">Tidak ada detail pesanan.</p>';
-                    }
-
-                    document.getElementById('popup-content').innerHTML = detailContent;
-                    document.getElementById('popup-detail').style.display = 'flex';
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    document.getElementById('popup-content').innerHTML = 
-                        '<p class="text-center text-red-500">Gagal memuat detail pesanan.</p>';
-                    document.getElementById('popup-detail').style.display = 'flex';
-                });
-        }
-
-        function hidePopupDetail() {
-            document.getElementById('popup-detail').style.display = 'none';
+            document.querySelector('.sidebar').classList.toggle('active');
+            document.querySelector('.sidebar-overlay').classList.toggle('display-block');
         }
     </script>
 </body>
 </html>
+
+<?php
+// Menutup koneksi ke database
+$conn->close();
+?>
